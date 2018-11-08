@@ -1,17 +1,3 @@
-# docker build -t ec2-deploy:base -f Dockerfile.base .
-FROM        python:3.6.7-slim
-MAINTAINER  folivoradev@gmail.com
-ENV         LANG                    C.UTF-8
-
-RUN         apt -y update
-RUN         apt -y dist-upgrade
-RUN         apt -y install gcc nginx supervisor && \
-            pip3 install uwsgi && \
-            apt -y remove gcc && \
-            apt -y autoremove
-
-COPY        requirements-production.txt /tmp/requirements.txt
-RUN         pip3 install -r /tmp/requirements.txt
 # docker build -t eb:docker -f Dockerfile .
 FROM        folivoradev/eb-docker:base
 ENV         DJANGO_SETTINGS_MODULE  config.settings.production

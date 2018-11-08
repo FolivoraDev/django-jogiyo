@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 git add -f .secrets/
-eb deploy --profile eb --staged
+eb deploy --profile EB --staged
 git reset HEAD .secrets/
