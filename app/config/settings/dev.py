@@ -18,7 +18,7 @@ DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
 # collectstatic을 실행했을 때,
 # 버킷의 'static'폴더 아래에 정적파일들이 저장되도록 설정해보기
 #  config.storages.StaticStorage클래스를 만들어서 적용
-STATICFILES_STORAGE = 'config.storages.StaticStorage'
+
 # 위 설정시 S3 프리티어의 기본 PUT한계를 금방 초과하게되므로
 #  STATIC_ROOT에 collectstatic후 Nginx에서 제공하는 형태로 사용
 AWS_ACCESS_KEY_ID = secrets['AWS_ACCESS_KEY_ID']
