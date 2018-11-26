@@ -15,9 +15,9 @@
   "AWS_STORAGE_BUCKET_NAME": "wps-9th-my-ldh-dev",
   "ALLOWED_HOSTS": [
     ".elasticbeanstalk.com",
-    "folivoradev.site",
-    "www.folivoradev.site",
-    "api.folivoradev.site",
+    "jogiyo.co.kr",
+    "www.jogiyo.co.kr",
+    "api.jogiyo.co.kr",
     "127.0.0.1"
   ],
   "SENTRY_DNS": "https://554eacb892334a2aa89c183334836aa9@sentry.io/1319310"

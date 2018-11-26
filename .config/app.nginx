@@ -7,7 +7,7 @@ server {
     listen 80;
 
     # 도메인이 'localhost'에 해당 할 때
-    server_name localhost folivoradev.site www.folivoradev.site api.folivoradev.site *.elastickbeanstalk.com *.amazonaws.com;
+    server_name localhost jogiyo.co.kr www.jogiyo.co.kr api.jogiyo.co.kr *.elastickbeanstalk.com *.amazonaws.com;
 #
 #    if ($http_x_forwarded_proto = 'http'){
 #        return 301 https://$host$request_uri;
