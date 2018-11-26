@@ -1,13 +1,13 @@
 # /etc/nginx/sites-available/
 server{
-    return 404;
+    return 405;
 }
 server {
     # 80번 포트로부터 받은 요청을 처리
     listen 80;
 
     # 도메인이 'localhost'에 해당 할 때
-    server_name folivoradev.site www.folivoradev.site api.folivoradev.site *.elastickbeanstalk.com;
+    server_name localhost folivoradev.site www.folivoradev.site api.folivoradev.site *.elastickbeanstalk.com *.amazonaws.com;
 
     if ($http_x_forwarded_proto = 'http'){
         return 301 https://$host$request_uri;
