@@ -1,0 +1,21 @@
+{
+  "SECRET_KEY": "$c^_lac3g!q2ntp8^)$d)3g%tc&7q#to7xj7dvge0!xlxhl=z2",
+  "DATABASES": {
+    "default": {
+      "ENGINE": "django.db.backends.postgresql",
+      "HOST": "mywps9th.c9g0hyf1vu00.ap-northeast-2.rds.amazonaws.com",
+      "NAME": "ec2_deploy_dev",
+      "USER": "folivoradev",
+      "PASSWORD": "1740960q",
+      "PORT": 5432
+    }
+  },
+  "AWS_ACCESS_KEY_ID": "AKIAJ3K36ZTVJRAJ346A",
+  "AWS_SECRET_ACCESS_KEY": "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",
+  "AWS_STORAGE_BUCKET_NAME": "wps-9th-my-ldh-dev",
+  "ALLOWED_HOSTS": [
+    "localhost",
+    ".elasticbeanstalk.com",
+    "127.0.0.1"
+  ]
+}
