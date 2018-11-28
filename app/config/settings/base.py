@@ -27,6 +27,14 @@ MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 # Auth
 AUTH_USER_MODEL = 'members.User'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',)
+}
+
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -41,6 +49,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework.authtoken',
+    'rest_framework',
+    'rest_framework_swagger',
 ]
 
 MIDDLEWARE = [
