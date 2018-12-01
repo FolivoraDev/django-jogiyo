@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('members/', include('members.urls.base')),
+    path('restaurants/', include('restaurants.urls.base')),
     path('api-token-auth/', obtain_auth_token)
 ]
 urlpatterns += static(

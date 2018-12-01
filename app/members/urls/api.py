@@ -7,5 +7,5 @@ schema_view = get_swagger_view(title='Members API')
 
 urlpatterns = [
     path('userlist/', UserList.as_view()),
-    path('testing/', schema_view)
+    path('docs/', schema_view)
 ]

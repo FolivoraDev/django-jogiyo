@@ -30,9 +30,23 @@ AUTH_USER_MODEL = 'members.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',)
+}
+
+LOGIN_URL = 'rest_framework:login'
+LOGOUT_URL = 'rest_framework:logout'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'api_key': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization'
+        }
+    },
 }
 
 ALLOWED_HOSTS = [
@@ -43,6 +57,8 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'members',
+    'restaurants',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
