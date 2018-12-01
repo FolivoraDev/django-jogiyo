@@ -20,7 +20,7 @@ class RestaurantList(generics.ListCreateAPIView):
     print(MEDIA_ROOT)
 
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (TokenAuthentication, SessionAuthentication)
+    authentication_classes = (TokenAuthentication,)
 
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
