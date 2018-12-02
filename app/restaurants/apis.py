@@ -17,11 +17,6 @@ class RestaurantList(generics.ListCreateAPIView):
     새로운 유저 인스턴스를 생성합니다.
     """
 
-    print(MEDIA_ROOT)
-
-    permission_classes = (IsAuthenticated,)
-    authentication_classes = (TokenAuthentication,)
-
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
 
