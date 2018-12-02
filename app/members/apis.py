@@ -1,9 +1,13 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 from .serializer import UserSerializer
 
 
+@permission_classes((AllowAny,))
 class UserList(generics.ListCreateAPIView):
     """
     get:
@@ -11,7 +15,20 @@ class UserList(generics.ListCreateAPIView):
 
     post:
     새로운 유저 인스턴스를 생성합니다.
-    """
+    :parameter username password
+    :return 새 유저 인스턴스, HTTP_200_OK
+    :except HTTP_400_BAD_REQUEST
 
+    """
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
+
+    def post(self, request, *args, **kwargs):
+        username = request.data['username']
+        password = request.data['password']
+        try:
+            new_user = get_user_model().objects.create_user(username=username, password=password)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(data=UserSerializer(new_user).data, status=status.HTTP_200_OK)
