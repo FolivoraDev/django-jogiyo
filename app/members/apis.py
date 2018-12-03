@@ -24,8 +24,16 @@ class UserList(generics.ListCreateAPIView):
     serializer_class = UserSerializer
 
     def post(self, request, *args, **kwargs):
-        username = request.data['username']
-        password = request.data['password']
+
+        username = request.data.get('username', None)
+        password = request.data.get('password', None)
+
+        # username = request.data['username']
+        # password = request.data['password']
+
+        if not username or not password:
+            return Response('username 혹은 password를 올바르게 입력하세요', status=status.HTTP_400_BAD_REQUEST)
+
         try:
             new_user = get_user_model().objects.create_user(username=username, password=password)
         except Exception as e:

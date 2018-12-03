@@ -9,3 +9,4 @@ django-rest-swagger<2.3.0
 djangorestframework<4.0.0
 requests<2.20.0
 beautifulsoup4<4.7.0
+django-cors-headers<2.5.0
