@@ -1,13 +1,11 @@
 # Create your views here.
 import json
-from io import BytesIO
 
 import requests
 from bs4 import BeautifulSoup
-from django.core import files
 from django.http import HttpResponse
 
-from restaurants.models import Restaurant
+from restaurants.models import Restaurant, Tag, Category
 
 
 def crawler(request):
@@ -45,6 +43,7 @@ def crawler(request):
         estimated_delivery_time = restaurant['estimated_delivery_time']
         additional_discount_per_menu = restaurant['additional_discount_per_menu']
         tags = restaurant['tags']
+        categories = restaurant['categories']
 
         base_url = 'https://www.yogiyo.co.kr/'
         photo_url = base_url + logo_url
@@ -56,8 +55,15 @@ def crawler(request):
             review_count=review_count,
             estimated_delivery_time=estimated_delivery_time,
             additional_discount_per_menu=additional_discount_per_menu,
-            tags=tags,
         )
+
+        for i in tags:
+            tag = Tag.objects.get_or_create(name=i)[0]
+            new_rest.tags.add(tag)
+
+        for i in categories:
+            category = Category.objects.get_or_create(name=i)[0]
+            new_rest.categories.add(category)
 
         url = photo_url
         resp = requests.get(url)

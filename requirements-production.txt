@@ -10,3 +10,4 @@ djangorestframework<4.0.0
 requests<2.20.0
 beautifulsoup4<4.7.0
 django-cors-headers<2.5.0
+djangorestframework-camel-case<0.3.0

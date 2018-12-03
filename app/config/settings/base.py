@@ -32,7 +32,15 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',)
+        'rest_framework.permissions.IsAuthenticated',),
+
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+    ),
+
+    'DEFAULT_PARSER_CLASSES': (
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    ),
 }
 
 LOGIN_URL = 'rest_framework:login'
@@ -70,6 +78,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework',
     'rest_framework_swagger',
+    'djangorestframework_camel_case',
 ]
 
 MIDDLEWARE = [
