@@ -1,8 +1,10 @@
 # Create your views here.
 import json
+from io import BytesIO
 
 import requests
 from bs4 import BeautifulSoup
+from django.core import files
 from django.http import HttpResponse
 
 from restaurants.models import Restaurant, Tag, Category
