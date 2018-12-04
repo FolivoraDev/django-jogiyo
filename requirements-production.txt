@@ -11,3 +11,4 @@ requests<2.20.0
 beautifulsoup4<4.7.0
 django-cors-headers<2.5.0
 djangorestframework-camel-case<0.3.0
+django-filter<2.1.0
