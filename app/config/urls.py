@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework_swagger.views import get_swagger_view
 
@@ -26,11 +26,11 @@ schema_view = get_swagger_view(title='Members API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
     path('members/', include('members.urls.base')),
     path('restaurants/', include('restaurants.urls.base')),
     path('api-token-auth/', obtain_auth_token),
     path('docs/', schema_view)
+
 ]
 urlpatterns += static(
     prefix=settings.MEDIA_URL,
@@ -38,4 +38,9 @@ urlpatterns += static(
 )
 urlpatterns += [
     path('api-auth/', include('rest_framework.urls')),
+]
+
+urlpatterns += [
+    path(r'', views.index),
+    re_path(r'^(?:.*)/?$', views.index),
 ]
