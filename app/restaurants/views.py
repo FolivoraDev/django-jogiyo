@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from django.core import files
 from django.http import HttpResponse
 
-from restaurants.models import Restaurant, Tag, Category
+from restaurants.models import Restaurant, Tag, Category, Menu, Food, SubChoice
 
 
 def crawler(request):
@@ -47,6 +47,8 @@ def crawler(request):
         tags = restaurant['tags']
         categories = restaurant['categories']
 
+        next_id = restaurant['id']
+
         base_url = 'https://www.yogiyo.co.kr/'
         photo_url = base_url + logo_url
 
@@ -77,4 +79,75 @@ def crawler(request):
         file_name = url.split("/")[-1]  # There's probably a better way of doing this but this is just a quick example
         new_rest.logo_url.save(file_name, files.File(fp))
 
+        params = {
+            'add_photo_menu': 'android',
+            'add_one_dish_menu': 'true',
+        }
+
+        response = requests.get(
+            'https://www.yogiyo.co.kr/api/v1/restaurants/%d/menu/' % next_id, headers=headers, params=params)
+
+        html_source = response.text
+
+        bs = BeautifulSoup(html_source, "html.parser")
+
+        item_list = json.loads(bs.text)
+
+        for item in item_list:
+            real_item = item['items']
+            menu_name = item['name']
+
+            new_menu = Menu.objects.get_or_create(name=menu_name, restaurant=new_rest)[0]
+
+            for i in real_item:
+                f_name = i['name']
+                f_image = i.get('image')
+                f_price = i['price']
+
+                if Food.objects.filter(name=f_name).exists():
+                    f_food = Food.objects.get(name=f_name)
+                else:
+                    f_food = Food.objects.create(name=f_name, price=f_price)
+
+                    if f_image:
+                        f_food.image = new_rest.logo_url
+                        f_food.save()
+                        # photo_url_2 = base_url + f_image
+                        #
+                        # url = photo_url_2
+                        # resp = requests.get(url)
+                        # if resp.status_code != requests.codes.ok:
+                        #     return
+                        #
+                        # fp = BytesIO()
+                        # fp.write(resp.content)
+                        # file_name = url.split("/")[-1]
+                        # f_food.image.save(file_name, files.File(fp))
+
+                new_menu.food.add(f_food)
+
+                sub = i.get('subchoices')
+
+                for j in sub:
+                    subchoices_name = j.get('name')
+                    new_sub = SubChoice.objects.get_or_create(name=subchoices_name)[0]
+
+                    foodsub = j.get('subchoices')
+                    for k in foodsub:
+                        food_name = k.get('name')
+                        food_price = k.get('price')
+
+                        if Food.objects.filter(name=food_name).exists():
+                            inside_food = Food.objects.get(name=food_name)
+                        else:
+                            inside_food = Food.objects.create(name=food_name, price=food_price)
+
+                        new_sub.food.add(inside_food)
+
     return HttpResponse('asda')
+
+
+def detail_crawler(request):
+    a = Restaurant.objects.first()
+    print(a.id)
+    return HttpResponse(a.id)
