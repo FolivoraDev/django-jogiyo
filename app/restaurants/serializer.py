@@ -35,14 +35,19 @@ class MenuSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'food')
 
 
+class RestaurantDetailSerializer(serializers.ModelSerializer):
+    menu_set = MenuSerializer(many=True)
+
+    class Meta:
+        model = Restaurant
+        fields = ('id', 'name', 'menu_set',)
+
+
 class RestaurantSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     categories = CategorySerializer(many=True)
-
-    menu_set = MenuSerializer(many=True)
 
     class Meta:
         model = Restaurant
         fields = ('id', 'name', 'logo_url', 'review_avg', 'min_order_amount', 'review_count', 'payment',
                   'estimated_delivery_time', 'additional_discount_per_menu', 'tags', 'categories')
-        fields += ('menu_set',)
