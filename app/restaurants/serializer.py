@@ -24,7 +24,7 @@ class SubChoiceSerializer(serializers.ModelSerializer):
 class FoodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Food
-        fields = ('id', 'name', 'price')
+        fields = ('id', 'image', 'name', 'price')
 
 
 class MenuSerializer(serializers.ModelSerializer):
