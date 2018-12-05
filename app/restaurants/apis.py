@@ -9,4 +9,4 @@ class RestaurantList(generics.ListCreateAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
     filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('categories', 'tags')
+    filter_fields = ('id', 'categories', 'tags')
