@@ -108,7 +108,7 @@ def crawler(request):
 
         new_rest.company_name = item_list['crmdata']['company_name']
         new_rest.company_number = item_list['crmdata']['company_number']
-        new_rest.country_origin = item_list['country_origin']
+        new_rest.country_origin = '원산지 더미 ㅡㅠㅡ' #item_list['country_origin']
 
         new_rest.save()
 
@@ -125,7 +125,7 @@ def crawler(request):
 
         bs = BeautifulSoup(html_source, "html.parser")
 
-        item_list = json.loads(bs.text)
+        item_list = json.loads(bs.text)[:10]
 
         for i in item_list:
             comment = i['comment']
@@ -145,7 +145,7 @@ def crawler(request):
 
         bs = BeautifulSoup(html_source, "html.parser")
 
-        item_list = json.loads(bs.text)
+        item_list = json.loads(bs.text)[:1]
 
         for item in item_list:
             real_item = item['items']
@@ -153,7 +153,7 @@ def crawler(request):
 
             new_menu = Menu.objects.get_or_create(name=menu_name, restaurant=new_rest)[0]
 
-            for i in real_item:
+            for i in real_item[:1]:
                 f_name = i['name']
                 f_image = i.get('image')
                 f_price = i['price']
@@ -182,12 +182,12 @@ def crawler(request):
 
                 sub = i.get('subchoices')
 
-                for j in sub:
+                for j in sub[:1]:
                     subchoices_name = j.get('name')
                     new_sub = SubChoice.objects.get_or_create(name=subchoices_name)[0]
 
                     foodsub = j.get('subchoices')
-                    for k in foodsub:
+                    for k in foodsub[:1]:
                         food_name = k.get('name')
                         food_price = k.get('price')
 
