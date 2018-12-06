@@ -145,7 +145,7 @@ def crawler(request):
 
         bs = BeautifulSoup(html_source, "html.parser")
 
-        item_list = json.loads(bs.text)[:1]
+        item_list = json.loads(bs.text)[:5]
 
         for item in item_list:
             real_item = item['items']
@@ -153,7 +153,7 @@ def crawler(request):
 
             new_menu = Menu.objects.get_or_create(name=menu_name, restaurant=new_rest)[0]
 
-            for i in real_item[:1]:
+            for i in real_item[:5]:
                 f_name = i['name']
                 f_image = i.get('image')
                 f_price = i['price']
@@ -182,12 +182,12 @@ def crawler(request):
 
                 sub = i.get('subchoices')
 
-                for j in sub[:1]:
+                for j in sub[:5]:
                     subchoices_name = j.get('name')
                     new_sub = SubChoice.objects.get_or_create(name=subchoices_name)[0]
 
                     foodsub = j.get('subchoices')
-                    for k in foodsub[:1]:
+                    for k in foodsub[:5]:
                         food_name = k.get('name')
                         food_price = k.get('price')
 
