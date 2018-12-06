@@ -1,31 +1,44 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
-from rest_framework.mixins import RetrieveModelMixin
-from rest_framework.response import Response
 
-from .models import Restaurant
-from .serializer import RestaurantSerializer, RestaurantDetailSerializer
+from .models import Restaurant, Menu, Review
+from .serializer import RestaurantSerializer, MenuSerializer, ReviewSerializer
 
 
-class RestaurantList(RetrieveModelMixin, generics.ListCreateAPIView):
+class RestaurantList(generics.ListCreateAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
+
+    def get_queryset(self):
+        return Restaurant.objects.filter(**self.kwargs)
 
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('categories', 'tags')
 
-    def get(self, request, *args, **kwargs):
-        restaurant_id = request.GET.get('id')
-        if restaurant_id:
-            self.queryset = Restaurant.objects.filter(id=restaurant_id)
-            self.serializer_class = RestaurantDetailSerializer
 
-        queryset = self.filter_queryset(self.get_queryset())
+class MenuList(generics.ListAPIView):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+    def get_queryset(self):
+        return Menu.objects.filter(**self.kwargs)
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+
+class ReviewList(generics.ListCreateAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        return Review.objects.filter(**self.kwargs)
+
+
+class ReviewCreate(generics.CreateAPIView):
+    serializer_class = ReviewSerializer
+
+
+class InfoList(generics.ListAPIView):
+    queryset = Restaurant.objects.all()
+    serializer_class = RestaurantSerializer
+
+    def get_queryset(self):
+        return Restaurant.objects.filter(**self.kwargs)
