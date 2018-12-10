@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from members.serializer import UserSerializer
-from .models import Restaurant, Tag, Category, Menu, Food, SubChoice, Review, Payment
+from .models import Restaurant, Tag, Category, Menu, Food, SubChoice, Review, Payment, Order
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -45,6 +45,10 @@ class MenuSerializer(serializers.ModelSerializer):
         model = Menu
         fields = ('id', 'name', 'food')
 
+    def create(self, validated_data):
+        related_data = validated_data.pop('food')
+        print(related_data)
+
 
 class RestaurantDetailSerializer(serializers.ModelSerializer):
     menu_set = MenuSerializer(many=True)
@@ -71,3 +75,12 @@ class RestaurantSerializer(serializers.ModelSerializer):
             'id', 'name', 'logo_url', 'review_avg', 'min_order_amount', 'review_count', 'owner_reply_count',
             'except_cash', 'payment_methods', 'discount_percent',
             'estimated_delivery_time', 'additional_discount_per_menu', 'tags', 'categories')
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    food = FoodSerializer(many=True)
+
+    class Meta:
+        model = Order
+        fields = ('id', 'user', 'food', 'time', 'address', 'request')

@@ -12,3 +12,5 @@ beautifulsoup4<4.7.0
 django-cors-headers<2.5.0
 djangorestframework-camel-case<0.3.0
 django-filter<2.1.0
+django-phonenumber-field<2.1.0
+phonenumbers<8.11.0

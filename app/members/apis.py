@@ -4,6 +4,7 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from members.models import User
 from .serializer import UserSerializer
 
 
@@ -23,13 +24,13 @@ class UserList(generics.ListCreateAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
 
+    def get_queryset(self):
+        return User.objects.filter(**self.kwargs)
+
     def post(self, request, *args, **kwargs):
 
         username = request.data.get('username', None)
         password = request.data.get('password', None)
-
-        # username = request.data['username']
-        # password = request.data['password']
 
         if not username or not password:
             return Response('username 혹은 password를 올바르게 입력하세요', status=status.HTTP_400_BAD_REQUEST)
