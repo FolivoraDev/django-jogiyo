@@ -29,10 +29,6 @@ class MenuList(generics.ListCreateAPIView):
     def get_queryset(self):
         return Menu.objects.filter(**self.kwargs)
 
-    # def perform_create(self, serializer):
-    #     print(self.request.data)
-    #     # serializer.save
-
 
 class MenuUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Menu.objects.all()

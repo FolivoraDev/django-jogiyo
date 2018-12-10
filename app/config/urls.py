@@ -18,18 +18,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.authtoken.views import obtain_auth_token
-from rest_framework_swagger.views import get_swagger_view
 
+from config.views import SwaggerSchemaView
 from . import views
-
-schema_view = get_swagger_view(title='Members API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('members/', include('members.urls.base')),
     path('restaurants/', include('restaurants.urls.base')),
     path('api-token-auth/', obtain_auth_token),
-    path('docs/', schema_view)
+    path('docs/', SwaggerSchemaView.as_view())
 
 ]
 urlpatterns += static(

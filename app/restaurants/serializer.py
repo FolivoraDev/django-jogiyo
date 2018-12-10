@@ -38,26 +38,6 @@ class ReviewSerializer(serializers.ModelSerializer):
             'user')
 
 
-class MenuSerializer(serializers.ModelSerializer):
-    food = FoodSerializer(many=True)
-
-    class Meta:
-        model = Menu
-        fields = ('id', 'name', 'food')
-
-    def create(self, validated_data):
-        related_data = validated_data.pop('food')
-        print(related_data)
-
-
-class RestaurantDetailSerializer(serializers.ModelSerializer):
-    menu_set = MenuSerializer(many=True)
-
-    class Meta:
-        model = Restaurant
-        fields = ('id', 'name', 'menu_set',)
-
-
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
@@ -75,6 +55,23 @@ class RestaurantSerializer(serializers.ModelSerializer):
             'id', 'name', 'logo_url', 'review_avg', 'min_order_amount', 'review_count', 'owner_reply_count',
             'except_cash', 'payment_methods', 'discount_percent',
             'estimated_delivery_time', 'additional_discount_per_menu', 'tags', 'categories')
+
+
+class MenuSerializer(serializers.ModelSerializer):
+    food = FoodSerializer(many=True, read_only=True)
+    restaurant = RestaurantSerializer()
+
+    class Meta:
+        model = Menu
+        fields = ('id', 'restaurant', 'name', 'food')
+
+
+class RestaurantDetailSerializer(serializers.ModelSerializer):
+    menu_set = MenuSerializer(many=True)
+
+    class Meta:
+        model = Restaurant
+        fields = ('id', 'name', 'menu_set',)
 
 
 class OrderSerializer(serializers.ModelSerializer):
