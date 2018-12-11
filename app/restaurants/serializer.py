@@ -59,8 +59,10 @@ class RestaurantSerializer(serializers.ModelSerializer):
 
 
 class MenuSerializer(serializers.ModelSerializer):
-    food = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Food.objects.all())
-    restaurant = serializers.SlugRelatedField(slug_field='name', queryset=Restaurant.objects.all())
+    # food = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Food.objects.all())
+    # restaurant = serializers.SlugRelatedField(slug_field='name', queryset=Restaurant.objects.all())
+    food = FoodSerializer(many=True)
+    restaurant = RestaurantSerializer()
 
     class Meta:
         model = Menu
