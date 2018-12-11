@@ -2,7 +2,7 @@ from .base import *
 
 secrets = json.load(open(os.path.join(SECRETS_DIR, 'dev.json')))
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = secrets['ALLOWED_HOSTS']
 
@@ -31,3 +31,7 @@ AWS_DEFAULT_ACL = None
 INSTALLED_APPS += [
     'django_extensions',
 ]
+
+# Celery settings
+
+CELERY_BROKER_URL = 'redis://localhost:6379//'

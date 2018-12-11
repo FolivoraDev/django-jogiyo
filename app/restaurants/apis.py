@@ -1,3 +1,4 @@
+from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 
@@ -56,19 +57,40 @@ class OrderList(generics.ListCreateAPIView):
         return Order.objects.filter(**self.kwargs)
 
 
+class FoodFilter(filters.FilterSet):
+    min_price = filters.NumberFilter(field_name="price", lookup_expr='gte')
+    max_price = filters.NumberFilter(field_name="price", lookup_expr='lte')
+
+    class Meta:
+        model = Food
+        fields = ['id', 'min_price', 'max_price']
+
+
 class FoodList(generics.ListCreateAPIView):
     queryset = Food.objects.all()
     serializer_class = FoodSerializer
+
+    def get_queryset(self):
+        return Food.objects.filter(**self.kwargs)
+
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = FoodFilter
 
 
 class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+    def get_queryset(self):
+        return Category.objects.filter(**self.kwargs)
+
 
 class SubChoiceList(generics.ListCreateAPIView):
     queryset = SubChoice.objects.all()
     serializer_class = SubChoiceSerializer
+
+    def get_queryset(self):
+        return SubChoice.objects.filter(**self.kwargs)
 
 
 class TagList(generics.ListCreateAPIView):

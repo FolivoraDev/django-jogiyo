@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from rest_framework.authtoken.views import obtain_auth_token
 
+from config import apis
 from config.views import SwaggerSchemaView
 from . import views
 
@@ -27,8 +28,8 @@ urlpatterns = [
     path('members/', include('members.urls.base')),
     path('restaurants/', include('restaurants.urls.base')),
     path('api-token-auth/', obtain_auth_token),
-    path('docs/', SwaggerSchemaView.as_view())
-
+    path('docs/', SwaggerSchemaView.as_view()),
+    path('send-email/', apis.SendEmailView.as_view())
 ]
 urlpatterns += static(
     prefix=settings.MEDIA_URL,

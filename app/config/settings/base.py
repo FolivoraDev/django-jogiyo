@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'djangorestframework_camel_case',
     'phonenumber_field',
+    'celery',
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,9 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = secrets['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = secrets['EMAIL_HOST_PASSWORD']
