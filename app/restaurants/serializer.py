@@ -53,13 +53,14 @@ class RestaurantSerializer(serializers.ModelSerializer):
         model = Restaurant
         fields = (
             'id', 'name', 'logo_url', 'review_avg', 'min_order_amount', 'review_count', 'owner_reply_count',
-            'except_cash', 'payment_methods', 'discount_percent',
-            'estimated_delivery_time', 'additional_discount_per_menu', 'tags', 'categories')
+            'except_cash', 'payment_methods', 'discount_percent', 'additional_discount_per_menu', 'delivery_fee',
+            'estimated_delivery_time', 'additional_discount_per_menu', 'tags', 'categories', 'begin', 'end',
+            'company_name', 'company_number', 'country_origin', 'introduction_text')
 
 
 class MenuSerializer(serializers.ModelSerializer):
-    food = FoodSerializer(many=True, read_only=True)
-    restaurant = RestaurantSerializer()
+    food = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Food.objects.all())
+    restaurant = serializers.SlugRelatedField(slug_field='name', queryset=Restaurant.objects.all())
 
     class Meta:
         model = Menu

@@ -43,6 +43,9 @@ class Food(models.Model):
     image = models.ImageField(blank=True, null=True, upload_to='restaurant/food', max_length=255)  # 이미지
     price = models.IntegerField()  # 가격
 
+    def __str__(self):
+        return self.name
+
 
 class Menu(models.Model):
     name = models.CharField(max_length=200)
