@@ -28,14 +28,32 @@ class FoodSerializer(serializers.ModelSerializer):
         fields = ('id', 'image', 'name', 'price')
 
 
-class ReviewSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    def validate(self, attrs):
+        attrs['user'] = self.context['request'].user
+        attrs['menu_summary'] = [i for i in
+                                 attrs['user'].order_set.order_by('-time').first().food.all().values_list('id',
+                                                                                                          flat=True)]
+        return attrs
 
     class Meta:
         model = Review
         fields = (
             'id', 'comment', 'rating', 'rating_delivery', 'rating_quantity', 'rating_taste', 'review_images', 'time',
-            'user')
+            'user', 'menu_summary', 'restaurant')
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    menu_summary = FoodSerializer(many=True)
+
+    class Meta:
+        model = Review
+        fields = (
+            'id', 'comment', 'rating', 'rating_delivery', 'rating_quantity', 'rating_taste', 'review_images', 'time',
+            'user', 'menu_summary', 'restaurant')
 
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -59,8 +77,6 @@ class RestaurantSerializer(serializers.ModelSerializer):
 
 
 class MenuSerializer(serializers.ModelSerializer):
-    # food = serializers.SlugRelatedField(many=True, slug_field='name', queryset=Food.objects.all())
-    # restaurant = serializers.SlugRelatedField(slug_field='name', queryset=Restaurant.objects.all())
     food = FoodSerializer(many=True)
     restaurant = RestaurantSerializer()
 
