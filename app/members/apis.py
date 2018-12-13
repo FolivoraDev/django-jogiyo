@@ -38,6 +38,7 @@ class UserList(generics.ListCreateAPIView):
         try:
             new_user = get_user_model().objects.create_user(username=username, password=password)
         except Exception as e:
+            print(e.__context__)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         return Response(data=UserSerializer(new_user).data, status=status.HTTP_200_OK)

@@ -47,12 +47,18 @@ class ReviewList(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         """
+        (*는 필수입니다.)
         해당 레스토랑에 대한 리뷰 생성입니다.
 
         *"comment":"string",
         *"rating_delivery": int,
         *"rating_quantity": int,
-        *"rating_taste": int
+        *"rating_taste": int,
+        "review_images": image,
+        "time": 자동 입력,
+        "user": 헤더의 토큰,
+        "menu_summary": list형태의 food,
+        "restaurant": url의 parameter (restaurant_id)
 
         """
         self.serializer_class = ReviewCreateSerializer

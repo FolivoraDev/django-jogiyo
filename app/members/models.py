@@ -8,9 +8,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 class User(AbstractUser):
     # admin에서 이 필드를 수정할 수 있도록 설정
 
-    nickname = models.CharField(max_length=20)
-    email = models.EmailField()
-    phone = PhoneNumberField(null=False, blank=False, unique=True)
+    nick_name = models.CharField(max_length=20, blank=True)
+    email = models.EmailField(blank=True)
+    phone_number = PhoneNumberField(null=False, blank=False)
 
     class Meta:
         verbose_name = '사용자'
