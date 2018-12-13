@@ -2,7 +2,7 @@ from .base import *
 
 secrets = json.load(open(os.path.join(SECRETS_DIR, 'dev.json')))
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = secrets['ALLOWED_HOSTS']
 

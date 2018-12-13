@@ -44,7 +44,7 @@ class Food(models.Model):
     price = models.IntegerField()  # 가격
 
     def __str__(self):
-        return self.name
+        return self.name + ' (' + str(self.id) + ')'
 
 
 class Menu(models.Model):

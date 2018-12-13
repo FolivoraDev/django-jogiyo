@@ -77,6 +77,18 @@ class RestaurantDetailSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'menu_set',)
 
 
+class OrderCreateSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    def validate(self, attrs):
+        attrs['user'] = self.context['request'].user
+        return attrs
+
+    class Meta:
+        model = Order
+        fields = ('id', 'restaurant', 'user', 'food', 'time', 'address', 'request')
+
+
 class OrderSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     food = FoodSerializer(many=True)

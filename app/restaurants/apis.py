@@ -4,7 +4,7 @@ from rest_framework import generics
 
 from .models import Restaurant, Menu, Review, Order, Food, Category, SubChoice, Tag, Payment
 from .serializer import RestaurantSerializer, MenuSerializer, ReviewSerializer, OrderSerializer, FoodSerializer, \
-    CategorySerializer, SubChoiceSerializer, TagSerializer, PaymentSerializer
+    CategorySerializer, SubChoiceSerializer, TagSerializer, PaymentSerializer, OrderCreateSerializer
 
 
 class RestaurantList(generics.ListCreateAPIView):
@@ -52,9 +52,15 @@ class ReviewUpdateView(generics.RetrieveUpdateDestroyAPIView):
 class OrderList(generics.ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    lookup_url_kwarg = "restaurant_id"
 
     def get_queryset(self):
         return Order.objects.filter(**self.kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.serializer_class = OrderCreateSerializer
+        request.data['restaurant'] = self.kwargs.get(self.lookup_url_kwarg)
+        return self.create(request, *args, **kwargs)
 
 
 class FoodFilter(filters.FilterSet):
