@@ -41,6 +41,20 @@ def crawler(request):
         'order': 'rank',
         'page': '0',
         'zip_code': '133123',
+    },{
+        'items': '20',
+        'lat': '37.54299521245206',
+        'lng': '127.0414897665702',
+        'order': 'rank',
+        'page': '0',
+        'zip_code': '133110',
+    },{
+        'items': '20',
+        'lat': '37.539631761851254',
+        'lng': '127.0569369800842',
+        'order': 'rank',
+        'page': '0',
+        'zip_code': '133120',
     }]
 
     for i in params:
