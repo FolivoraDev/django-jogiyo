@@ -126,15 +126,6 @@ class OrderList(generics.ListCreateAPIView):
         return self.create(request, *args, **kwargs)
 
 
-# class FoodFilter(filters.FilterSet):
-#     min_price = filters.NumberFilter(field_name="price", lookup_expr='gte')
-#     max_price = filters.NumberFilter(field_name="price", lookup_expr='lte')
-#
-#     class Meta:
-#         model = Food
-#         fields = ['id', 'min_price', 'max_price']
-
-
 class FoodList(generics.ListCreateAPIView):
     queryset = Food.objects.all()
     serializer_class = FoodSerializer
@@ -143,7 +134,6 @@ class FoodList(generics.ListCreateAPIView):
         return Food.objects.filter(**self.kwargs)
 
     filter_backends = (DjangoFilterBackend,)
-    # filterset_class = FoodFilter
 
 
 class CategoryList(generics.ListCreateAPIView):

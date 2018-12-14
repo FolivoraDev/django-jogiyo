@@ -62,6 +62,9 @@ def crawler(request):
         base_url = 'https://www.yogiyo.co.kr/'
         photo_url = base_url + logo_url
 
+        if Restaurant.objects.filter(name=name).exists():
+            continue
+
         new_rest = Restaurant.objects.create(
             name=name,
             owner_reply_count=owner_reply_count,

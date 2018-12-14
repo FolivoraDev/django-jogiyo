@@ -6,7 +6,7 @@ from django.db import models
 
 
 class Restaurant(models.Model):
-    name = models.CharField(max_length=200, unique=True)  # 이름
+    name = models.CharField(max_length=200)  # 이름
     logo_url = models.ImageField(blank=True, null=True, upload_to='restaurant')  # 로고
     review_avg = models.DecimalField(max_digits=10, decimal_places=2)  # 평점
     min_order_amount = models.IntegerField()  # 배달 최소 주문 금액
@@ -46,7 +46,7 @@ class Order(models.Model):
 
 
 class Food(models.Model):
-    name = models.CharField(max_length=200, unique=True)  # 이름
+    name = models.CharField(max_length=200)  # 이름
     image = models.ImageField(blank=True, null=True, upload_to='restaurant/food', max_length=255)  # 이미지
     price = models.IntegerField()  # 가격
 
@@ -61,12 +61,12 @@ class Menu(models.Model):
 
 
 class SubChoice(models.Model):
-    name = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200)
     food = models.ManyToManyField('Food', blank=True)
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=20)
 
 
 class Category(models.Model):
