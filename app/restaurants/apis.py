@@ -1,5 +1,5 @@
-from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 from rest_framework import generics
 
 from .models import Restaurant, Menu, Review, Order, Food, Category, SubChoice, Tag, Payment
@@ -15,8 +15,8 @@ class RestaurantList(generics.ListCreateAPIView):
     def get_queryset(self):
         return Restaurant.objects.filter(**self.kwargs)
 
-    filter_backends = (DjangoFilterBackend,)
-    filter_fields = ('categories', 'tags')
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    filter_fields = ('categories', 'tags', 'review_avg', 'review_count', 'min_order_amount', 'estimated_delivery_time')
 
 
 class RestaurantUpdateView(generics.RetrieveUpdateDestroyAPIView):
@@ -49,7 +49,6 @@ class ReviewList(generics.ListCreateAPIView):
         """
         (*는 필수입니다.)
         해당 레스토랑에 대한 리뷰 생성입니다.
-
         *"comment":"string",
         *"rating_delivery": int,
         *"rating_quantity": int,
@@ -59,7 +58,6 @@ class ReviewList(generics.ListCreateAPIView):
         "user": 헤더의 토큰,
         "menu_summary": list형태의 food,
         "restaurant": url의 parameter (restaurant_id)
-
         """
         self.serializer_class = ReviewCreateSerializer
         rating_delivery = request.data.get('rating_delivery', 0)
@@ -98,16 +96,19 @@ class OrderList(generics.ListCreateAPIView):
 
         self.serializer_class = OrderCreateSerializer
         request.data['restaurant'] = self.kwargs.get(self.lookup_url_kwarg)
+
+        print(request.user.is_anonymous)
+
         return self.create(request, *args, **kwargs)
 
 
-class FoodFilter(filters.FilterSet):
-    min_price = filters.NumberFilter(field_name="price", lookup_expr='gte')
-    max_price = filters.NumberFilter(field_name="price", lookup_expr='lte')
-
-    class Meta:
-        model = Food
-        fields = ['id', 'min_price', 'max_price']
+# class FoodFilter(filters.FilterSet):
+#     min_price = filters.NumberFilter(field_name="price", lookup_expr='gte')
+#     max_price = filters.NumberFilter(field_name="price", lookup_expr='lte')
+#
+#     class Meta:
+#         model = Food
+#         fields = ['id', 'min_price', 'max_price']
 
 
 class FoodList(generics.ListCreateAPIView):
@@ -118,7 +119,7 @@ class FoodList(generics.ListCreateAPIView):
         return Food.objects.filter(**self.kwargs)
 
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = FoodFilter
+    # filterset_class = FoodFilter
 
 
 class CategoryList(generics.ListCreateAPIView):

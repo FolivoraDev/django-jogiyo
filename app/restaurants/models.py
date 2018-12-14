@@ -3,6 +3,8 @@ from django.db import models
 
 
 # Create your models here.
+
+
 class Restaurant(models.Model):
     name = models.CharField(max_length=200, unique=True)  # 이름
     logo_url = models.ImageField(blank=True, null=True, upload_to='restaurant')  # 로고

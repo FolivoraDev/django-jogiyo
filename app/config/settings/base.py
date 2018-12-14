@@ -31,8 +31,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    # ),
 
     'DEFAULT_RENDERER_CLASSES': (
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
@@ -42,7 +43,7 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
     ),
     'DEFAULT_FILTER_BACKENDS':
-        ('django_filters.rest_framework.DjangoFilterBackend',),
+        ('django_filters.rest_framework.DjangoFilterBackend', 'django_filters.rest_framework.OrderingFilter'),
 }
 
 LOGIN_URL = 'rest_framework:login'
