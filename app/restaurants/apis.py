@@ -1,5 +1,6 @@
+from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
-from django.contrib.gis.measure import Distance
+from django.contrib.gis.measure import Distance as MeasureDistance
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework import generics
@@ -23,15 +24,22 @@ class RestaurantList(generics.ListCreateAPIView):
             lng = float(lng)
             radius = 1
             point = Point(lng, lat)
-            query = Restaurant.objects.filter(location__distance_lte=(point, Distance(km=radius)))
-        else:
 
+            distance = self.request.query_params.get('ordering', False)
+
+            if distance:
+                query = Restaurant.objects.filter(location__distance_lte=(point, MeasureDistance(km=radius))).annotate(
+                    distance=Distance("location", point)).order_by(distance)
+            else:
+                query = Restaurant.objects.filter(location__distance_lte=(point, MeasureDistance(km=radius)))
+        else:
             query = Restaurant.objects.filter(**self.kwargs)
 
         return query
 
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
-    filter_fields = ('categories', 'tags', 'review_avg', 'review_count', 'min_order_amount', 'estimated_delivery_time')
+    filter_fields = (
+        'categories', 'tags', 'review_avg', 'review_count', 'min_order_amount', 'estimated_delivery_time')
 
 
 class RestaurantUpdateView(generics.RetrieveUpdateDestroyAPIView):

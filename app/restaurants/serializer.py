@@ -67,8 +67,6 @@ class RestaurantSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True)
     payment_methods = PaymentSerializer(many=True)
 
-    # distance =
-
     class Meta:
         model = Restaurant
         fields = (
