@@ -1,3 +1,5 @@
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import Distance
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework import generics
@@ -13,7 +15,20 @@ class RestaurantList(generics.ListCreateAPIView):
     serializer_class = RestaurantSerializer
 
     def get_queryset(self):
-        return Restaurant.objects.filter(**self.kwargs)
+        lat = self.request.query_params.get('lat', False)
+        lng = self.request.query_params.get('lng', False)
+
+        if lat and lng:
+            lat = float(lat)
+            lng = float(lng)
+            radius = 1
+            point = Point(lat, lng)
+            query = Restaurant.objects.filter(location__distance_lte=(point, Distance(km=radius)))
+        else:
+
+            query = Restaurant.objects.filter(**self.kwargs)
+
+        return query
 
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filter_fields = ('categories', 'tags', 'review_avg', 'review_count', 'min_order_amount', 'estimated_delivery_time')
@@ -22,6 +37,9 @@ class RestaurantList(generics.ListCreateAPIView):
 class RestaurantUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
+
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    filter_fields = ('categories', 'tags', 'review_avg', 'review_count', 'min_order_amount', 'estimated_delivery_time')
 
 
 class MenuList(generics.ListCreateAPIView):
@@ -96,8 +114,6 @@ class OrderList(generics.ListCreateAPIView):
 
         self.serializer_class = OrderCreateSerializer
         request.data['restaurant'] = self.kwargs.get(self.lookup_url_kwarg)
-
-        print(request.user.is_anonymous)
 
         return self.create(request, *args, **kwargs)
 

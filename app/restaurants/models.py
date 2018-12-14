@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
-from django.db import models
-
 
 # Create your models here.
+from django.contrib.gis.db.models import PointField
+from django.db import models
 
 
 class Restaurant(models.Model):
@@ -11,13 +11,13 @@ class Restaurant(models.Model):
     review_avg = models.DecimalField(max_digits=10, decimal_places=2)  # 평점
     min_order_amount = models.IntegerField()  # 배달 최소 주문 금액
     except_cash = models.BooleanField(default=True)  # 현금 결제
-    payment_methods = models.ManyToManyField('Payment', blank=True)  # 결제방식
-    review_count = models.IntegerField()  # 리뷰 개수
-    owner_reply_count = models.IntegerField()  # 사장 리뷰 개수
+    payment_methods = models.ManyToManyField('Payment', blank=True)  # 결제 방식
+    review_count = models.IntegerField()  # 리뷰 개수 (삭제예정)
+    owner_reply_count = models.IntegerField()  # 사장 리뷰 개수 (삭제예정)
     estimated_delivery_time = models.CharField(max_length=20)  # 걸리는 시간
     discount_percent = models.IntegerField()  # 할인
     additional_discount_per_menu = models.IntegerField()  # 배달할인
-    delivery_fee = models.IntegerField()  # 배달료
+    delivery_fee = models.IntegerField(default=0)  # 배달료
 
     begin = models.TimeField()  # 영업 시작
     end = models.TimeField()  # 영업 끝
@@ -29,6 +29,11 @@ class Restaurant(models.Model):
 
     tags = models.ManyToManyField('Tag', blank=True)  # 태그(세스코)
     categories = models.ManyToManyField('Category', blank=True)  # 카테고리
+
+    lat = models.DecimalField(max_digits=15, decimal_places=12, default=0)  # 위도
+    lng = models.DecimalField(max_digits=15, decimal_places=12, default=0)  # 경도
+
+    location = PointField(default='POINT(0.0 0.0)')
 
 
 class Order(models.Model):

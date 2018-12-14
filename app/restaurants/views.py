@@ -4,6 +4,7 @@ from io import BytesIO
 
 import requests
 from bs4 import BeautifulSoup
+from django.contrib.gis.geos import Point
 from django.core import files
 from django.http import HttpResponse
 
@@ -52,6 +53,9 @@ def crawler(request):
         categories = restaurant['categories']
         begin = restaurant['begin']
         end = restaurant['end']
+        lat = restaurant['lat']
+        lng = restaurant['lng']
+        point = Point(lng, lat)
 
         next_id = restaurant['id']
 
@@ -69,6 +73,7 @@ def crawler(request):
             additional_discount_per_menu=additional_discount_per_menu,
             begin=begin,
             end=end,
+            location=point
         )
 
         for i in payment_methods:
@@ -108,7 +113,7 @@ def crawler(request):
 
         new_rest.company_name = item_list['crmdata']['company_name']
         new_rest.company_number = item_list['crmdata']['company_number']
-        new_rest.country_origin = '원산지 더미 ㅡㅠㅡ' #item_list['country_origin']
+        new_rest.country_origin = '원산지 더미 ㅡㅠㅡ'  # item_list['country_origin']
 
         new_rest.save()
 
@@ -127,7 +132,7 @@ def crawler(request):
 
         item_list = json.loads(bs.text)[:10]
 
-        for i in item_list:
+        for i in item_list[:10]:
             comment = i['comment']
             rating = i['rating']
             rating_delivery = i['rating_delivery']
@@ -147,7 +152,7 @@ def crawler(request):
 
         item_list = json.loads(bs.text)[:5]
 
-        for item in item_list:
+        for item in item_list[:5]:
             real_item = item['items']
             menu_name = item['name']
 
@@ -202,6 +207,41 @@ def crawler(request):
 
 
 def detail_crawler(request):
-    a = Restaurant.objects.first()
-    print(a.id)
-    return HttpResponse(a.id)
+    headers = {
+        'X-ApiKey': 'iphoneap',
+        'X-ApiSecret': 'fe5183cc3dea12bd0ce299cf110a75a2',
+        'X-MOD-SBB-CTYPE': 'xhr',
+    }
+
+    # ?items=20&lat=37.4980608&lng=127.11526400000001&order=rank&page=0&search=&zip_code=138169
+    params = {
+        'items': '20',
+        'lat': '37.4980608',
+        'lng': '127.11526400000001',
+        'order': 'rank',
+        'page': '0',
+        'zip_code': '138169',
+    }
+
+    response = requests.get(
+        'https://www.yogiyo.co.kr/api/v1/restaurants-geo/', headers=headers, params=params)
+
+    html_source = response.text
+
+    bs = BeautifulSoup(html_source, "html.parser")
+
+    restaurant_list = json.loads(bs.text)['restaurants']
+
+    for i in restaurant_list():
+        name = i['name']
+        lat = i['lat']
+        lng = i['lng']
+
+        print(lat, lng)
+        res = Restaurant.objects.get(name=name)
+
+        res.lat = lat
+        res.lng = lng
+
+        print(type(lat), type(lng))
+        res.save()
