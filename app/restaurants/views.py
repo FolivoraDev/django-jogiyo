@@ -22,11 +22,11 @@ def crawler(request):
     # ?items=20&lat=37.4980608&lng=127.11526400000001&order=rank&page=0&search=&zip_code=138169
     params = {
         'items': '20',
-        'lat': '37.4980608',
-        'lng': '127.11526400000001',
+        'lat': '37.5399238',
+        'lng': '127.05075719999999',
         'order': 'rank',
         'page': '0',
-        'zip_code': '138169',
+        'zip_code': '133111',
     }
 
     response = requests.get(

@@ -22,7 +22,7 @@ class RestaurantList(generics.ListCreateAPIView):
             lat = float(lat)
             lng = float(lng)
             radius = 1
-            point = Point(lat, lng)
+            point = Point(lng, lat)
             query = Restaurant.objects.filter(location__distance_lte=(point, Distance(km=radius)))
         else:
 
