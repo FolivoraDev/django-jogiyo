@@ -1,5 +1,6 @@
 import datetime
 
+from django.db.models import Avg
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -80,13 +81,32 @@ class RestaurantSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True)
     payment_methods = PaymentSerializer(many=True)
 
+    rating_delivery_avg = serializers.SerializerMethodField()
+    review_avg = serializers.SerializerMethodField()
+    rating_quantity_avg = serializers.SerializerMethodField()
+    rating_taste_avg = serializers.SerializerMethodField()
+
+    def get_rating_delivery_avg(self, obj):
+        return obj.review_set.aggregate(Avg('rating_delivery'))['rating_delivery__avg']
+
+    def get_review_avg(self, obj):
+        return obj.review_set.aggregate(Avg('rating'))['rating__avg']
+
+    def get_rating_taste_avg(self, obj):
+        return obj.review_set.aggregate(Avg('rating_taste'))['rating_taste__avg']
+
+    def get_rating_quantity_avg(self, obj):
+        return obj.review_set.aggregate(Avg('rating_quantity'))['rating_quantity__avg']
+
     class Meta:
         model = Restaurant
         fields = (
-            'id', 'name', 'logo_url', 'review_avg', 'min_order_amount', 'review_count', 'owner_reply_count',
+            'id', 'name', 'logo_url', 'min_order_amount', 'review_count', 'owner_reply_count',
             'except_cash', 'payment_methods', 'discount_percent', 'additional_discount_per_menu', 'delivery_fee',
             'estimated_delivery_time', 'additional_discount_per_menu', 'tags', 'categories', 'begin', 'end',
-            'company_name', 'company_number', 'country_origin', 'introduction_text', 'location')
+            'company_name', 'company_number', 'country_origin', 'introduction_text', 'location', 'review_avg',
+            'rating_delivery_avg',
+            'rating_quantity_avg', 'rating_taste_avg')
 
 
 class MenuSerializer(serializers.ModelSerializer):

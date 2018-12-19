@@ -47,9 +47,6 @@ class RestaurantUpdateView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RestaurantSerializer
 
     def get(self, request, *args, **kwargs):
-        print(self.request.parsers)
-        print(self.request.auth)
-        print(self.request.authenticators)
         return self.retrieve(request, *args, **kwargs)
 
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
