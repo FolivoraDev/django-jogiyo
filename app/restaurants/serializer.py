@@ -33,9 +33,15 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         attrs['user'] = self.context['request'].user
-        attrs['menu_summary'] = [i for i in
-                                 attrs['user'].order_set.order_by('-time').first().food.all().values_list('id',
-                                                                                                          flat=True)]
+        attrs['menu_summary'] = []
+
+        if attrs['user'].is_anonymous:
+            raise serializers.ValidationError('비회원입니다 헤더에 토큰을 넣어주세요')
+
+        if attrs['user'].order_set.exists():
+            attrs['menu_summary'] = [i for i in
+                                     attrs['user'].order_set.order_by('-time').first().food.all().values_list('id',
+                                                                                                              flat=True)]
         return attrs
 
     class Meta:

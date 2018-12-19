@@ -46,6 +46,12 @@ class RestaurantUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
 
+    def get(self, request, *args, **kwargs):
+        print(self.request.parsers)
+        print(self.request.auth)
+        print(self.request.authenticators)
+        return self.retrieve(request, *args, **kwargs)
+
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filter_fields = ('categories', 'tags', 'review_avg', 'review_count', 'min_order_amount', 'estimated_delivery_time')
 
@@ -86,6 +92,7 @@ class ReviewList(generics.ListCreateAPIView):
         "restaurant": url의 parameter (restaurant_id)
         """
         self.serializer_class = ReviewCreateSerializer
+
         rating_delivery = request.data.get('rating_delivery', 0)
         rating_quantity = request.data.get('rating_quantity', 0)
         rating_taste = request.data.get('rating_taste', 0)
