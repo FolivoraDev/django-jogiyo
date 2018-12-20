@@ -85,6 +85,7 @@ class RestaurantSerializer(serializers.ModelSerializer):
     review_avg = serializers.SerializerMethodField()
     rating_quantity_avg = serializers.SerializerMethodField()
     rating_taste_avg = serializers.SerializerMethodField()
+    review_count = serializers.SerializerMethodField()
 
     def get_rating_delivery_avg(self, obj):
         return obj.review_set.aggregate(Avg('rating_delivery'))['rating_delivery__avg']
@@ -97,6 +98,9 @@ class RestaurantSerializer(serializers.ModelSerializer):
 
     def get_rating_quantity_avg(self, obj):
         return obj.review_set.aggregate(Avg('rating_quantity'))['rating_quantity__avg']
+
+    def get_review_count(self, obj):
+        return obj.review_set.all().count()
 
     class Meta:
         model = Restaurant
@@ -115,7 +119,7 @@ class MenuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ('id', 'restaurant', 'name', 'food')
+        fields = ('id', 'name', 'restaurant', 'food')
 
 
 class RestaurantDetailSerializer(serializers.ModelSerializer):

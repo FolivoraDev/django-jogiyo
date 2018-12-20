@@ -20,56 +20,30 @@ def crawler(request):
     }
 
     # ?items=20&lat=37.4980608&lng=127.11526400000001&order=rank&page=0&search=&zip_code=138169
-    params = [{
-        'items': '20',
-        'lat': '37.54880720262537',
-        'lng': '127.04373950737093',
-        'order': 'rank',
-        'page': '0',
-        'zip_code': '133112',
-    }, {
-        'items': '20',
-        'lat': '37.53584898867251',
-        'lng': '127.055329492478',
-        'order': 'rank',
-        'page': '0',
-        'zip_code': '133121',
-    }, {
-        'items': '20',
-        'lat': '37.545549365327076',
-        'lng': '127.05794435577982',
-        'order': 'rank',
-        'page': '0',
-        'zip_code': '133123',
-    }, {
+    params = {
         'items': '20',
         'lat': '37.54299521245206',
         'lng': '127.0414897665702',
         'order': 'rank',
         'page': '0',
         'zip_code': '133110',
-    }, {
-        'items': '20',
-        'lat': '37.539631761851254',
-        'lng': '127.0569369800842',
-        'order': 'rank',
-        'page': '0',
-        'zip_code': '133120',
-    }]
+    }
 
-    cate = ['1인분 주문', '프렌차이즈', '치킨', '피자/양식', '중국집', '한식', '일식/돈까스', '족발/보쌈', '야식', '분식', '카페/디저트']
+    for i in range(0, 10):
 
-    for j in params:
-        for i in cate:
+        try:
+            params['page'] = str(i)
+
+            print(params)
 
             response = requests.get(
-                'https://www.yogiyo.co.kr/api/v1/restaurants-geo/?category=%s' % i, headers=headers, params=j)
+                'https://www.yogiyo.co.kr/api/v1/restaurants-geo/', headers=headers, params=params)
 
             html_source = response.text
 
             bs = BeautifulSoup(html_source, "html.parser")
 
-            restaurant_list = json.loads(bs.text)['restaurants']
+            restaurant_list = json.loads(bs.text).get('restaurants', None)
 
             for restaurant in restaurant_list:
                 name = restaurant['name']
@@ -153,7 +127,7 @@ def crawler(request):
 
                 new_rest.company_name = item_list['crmdata']['company_name']
                 new_rest.company_number = item_list['crmdata']['company_number']
-                new_rest.country_origin = '원산지 더미 ㅡㅠㅡ'  # item_list['country_origin']
+                new_rest.country_origin = item_list['country_origin']
 
                 new_rest.save()
 
@@ -172,12 +146,15 @@ def crawler(request):
 
                 item_list = json.loads(bs.text)[:10]
 
-                for i in item_list[:10]:
-                    comment = i['comment']
-                    rating = i.get('rating', 0)
-                    rating_delivery = i['rating_delivery']
-                    rating_quantity = i['rating_quantity']
-                    rating_taste = i['rating_taste']
+                for k in item_list[:5]:
+                    if new_rest.review_set.all().count() > 5:
+                        continue
+
+                    comment = k['comment']
+                    rating = k.get('rating', 0)
+                    rating_delivery = k['rating_delivery']
+                    rating_quantity = k['rating_quantity']
+                    rating_taste = k['rating_taste']
                     user = User.objects.first()
                     Review.objects.create(comment=comment, rating=rating, rating_delivery=rating_delivery,
                                           rating_quantity=rating_quantity, rating_taste=rating_taste, user=user,
@@ -242,82 +219,42 @@ def crawler(request):
                                     inside_food = Food.objects.create(name=food_name, price=food_price)
 
                                 new_sub.food.add(inside_food)
+        except Exception as e:
+
+            print(e)
 
     return HttpResponse('asda')
 
 
 def detail_crawler(request):
-    # headers = {
-    #     'X-ApiKey': 'iphoneap',
-    #     'X-ApiSecret': 'fe5183cc3dea12bd0ce299cf110a75a2',
-    #     'X-MOD-SBB-CTYPE': 'xhr',
-    # }
+    # ll = []
+    # rest = Restaurant.objects.get(id='175')
     #
-    # # ?items=20&lat=37.4980608&lng=127.11526400000001&order=rank&page=0&search=&zip_code=138169
-    # params = [{
-    #     'items': '20',
-    #     'lat': '37.54880720262537',
-    #     'lng': '127.04373950737093',
-    #     'order': 'rank',
-    #     'page': '0',
-    #     'zip_code': '133112',
-    # }, {
-    #     'items': '20',
-    #     'lat': '37.53584898867251',
-    #     'lng': '127.055329492478',
-    #     'order': 'rank',
-    #     'page': '0',
-    #     'zip_code': '133121',
-    # }, {
-    #     'items': '20',
-    #     'lat': '37.545549365327076',
-    #     'lng': '127.05794435577982',
-    #     'order': 'rank',
-    #     'page': '0',
-    #     'zip_code': '133123',
-    # }, {
-    #     'items': '20',
-    #     'lat': '37.54299521245206',
-    #     'lng': '127.0414897665702',
-    #     'order': 'rank',
-    #     'page': '0',
-    #     'zip_code': '133110',
-    # }, {
-    #     'items': '20',
-    #     'lat': '37.539631761851254',
-    #     'lng': '127.0569369800842',
-    #     'order': 'rank',
-    #     'page': '0',
-    #     'zip_code': '133120',
-    # }]
+    # for i in rest.menu_set.all():
+    #     ll += i.food.all()
     #
-    # cate = ['1인분 주문', '프렌차이즈', '치킨', '피자/양식', '중국집', '한식', '일식/돈까스', '족발/보쌈', '야식', '분식', '카페/디저트']
+    # for i in rest.review_set.all():
+    #     i.menu_summary.add(random.choice(ll))
+    #     print(random.choice(ll))
+
+    aa = Menu.objects.filter(name='Photo Menu Items')
+
+    for i in aa:
+        i.save()
+
+
+    # us = [i for i in User.objects.all()[1:]]
     #
-    # for j in params:
-    #     for i in cate:
-    #         response = requests.get(
-    #             'https://www.yogiyo.co.kr/api/v1/restaurants-geo/?category=%s' % i, headers=headers, params=j)
-    #
-    #         html_source = response.text
-    #
-    #         bs = BeautifulSoup(html_source, "html.parser")
-    #
-    #         restaurant_list = json.loads(bs.text)['restaurants']
-    #
-    #         for restaurant in restaurant_list:
-    #             name = restaurant['name']
-    #             delivery_fee = restaurant['delivery_fee']
-    #
-    #             if not Restaurant.objects.filter(name=name).exists():
-    #                 continue
-    #
-    #             rest = Restaurant.objects.get(name=name)
-    #
-    #             rest.delivery_fee = delivery_fee
-    #
-    #             rest.save()
+    # for i in Review.objects.all():
+    #     i.user = random.choice(us)
+    #     i.save()
 
     # print(request.method)
     # print(request.content_type)
+    #
+    # name = ['Hyunjun', 'Soyoung', 'Jihye', 'Jihoon', 'Eunkyung', 'Yuup', 'Donghwan', 'Donghyun']
+    #
+    # for i in name:
+    #     User.objects.create_user(username=i, password='123')
 
     return HttpResponse('success')

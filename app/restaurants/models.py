@@ -23,7 +23,7 @@ class Restaurant(models.Model):
     end = models.TimeField()  # 영업 끝
     company_name = models.CharField(max_length=50)  # 사업장 이름
     company_number = models.CharField(max_length=20)  # 사업장 번호
-    country_origin = models.CharField(max_length=2000)  # 원산지
+    country_origin = models.CharField(max_length=20000)  # 원산지
 
     introduction_text = models.CharField(max_length=500, default='')  # 사장님 알림
 
@@ -84,7 +84,7 @@ class Review(models.Model):
     rating_quantity = models.DecimalField(max_digits=10, decimal_places=1)  # 양
     rating_taste = models.DecimalField(max_digits=10, decimal_places=1)  # 맛
     review_images = models.ImageField(blank=True, null=True, upload_to='restaurant/review')
-    time = models.DateTimeField(auto_now=True)  # 작성시간
+    time = models.DateTimeField(auto_now_add=True)  # 작성시간
     menu_summary = models.ManyToManyField('Food', blank=True)  # 주문한 메뉴
     restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)  # 작성자
