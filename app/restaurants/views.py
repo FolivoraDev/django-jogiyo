@@ -1,5 +1,6 @@
 # Create your views here.
 import json
+import random
 from io import BytesIO
 
 import requests
@@ -227,27 +228,29 @@ def crawler(request):
 
 
 def detail_crawler(request):
-    # ll = []
-    # rest = Restaurant.objects.get(id='175')
-    #
-    # for i in rest.menu_set.all():
-    #     ll += i.food.all()
-    #
-    # for i in rest.review_set.all():
-    #     i.menu_summary.add(random.choice(ll))
-    #     print(random.choice(ll))
+    rest = [i for i in Restaurant.objects.all()]
+    usss = [i for i in User.objects.all()]
 
-    aa = Menu.objects.filter(name='Photo Menu Items')
+    ll = [1, 2, 3, 4, 5]
 
-    for i in aa:
-        i.save()
+    asd = [i for i in range(0, 6)]
 
+    cc = ['괜츄나요 맛있어용. 배달은 생가곱다 빨리왓네영',
+          '맛은 굿굿 조금 비싸네요ㅎ',
+          '맛빠좋 아세요? 맛잇고 빠르고 좋다',
+          '너네는 배달이문제야 음식이 다식어서 온다는게 말이되? 흥칫뿐',
+          '배가 심심할때 시켜먹었는데 배달 빠르네요',
+          '너무 맛있어요~']
 
-    # us = [i for i in User.objects.all()[1:]]
-    #
-    # for i in Review.objects.all():
-    #     i.user = random.choice(us)
-    #     i.save()
+    for i in rest:
+        for j in range(0, random.choice(asd)):
+            Review.objects.create(comment=random.choice(cc),
+                                  rating=random.choice(ll),
+                                  rating_delivery=random.choice(ll),
+                                  rating_quantity=random.choice(ll),
+                                  rating_taste=random.choice(ll),
+                                  restaurant=i,
+                                  user=random.choice(usss))
 
     # print(request.method)
     # print(request.content_type)

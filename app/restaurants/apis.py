@@ -98,6 +98,10 @@ class ReviewList(generics.ListCreateAPIView):
         request.data['restaurant'] = self.kwargs.get(self.lookup_url_kwarg)
         return self.create(request, *args, **kwargs)
 
+    filter_backends = (filters.OrderingFilter,)
+    filter_fields = (
+        'time')
+
 
 class ReviewUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
