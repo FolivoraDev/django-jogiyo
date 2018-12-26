@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
 
 
 class User(AbstractUser):
@@ -10,7 +12,7 @@ class User(AbstractUser):
 
     nick_name = models.CharField(max_length=20, blank=True)
     email = models.EmailField(blank=True)
-    phone_number = PhoneNumberField(null=True, blank=True)
+    phone_number = PhoneNumberField(unique=True)
 
     class Meta:
         verbose_name = '사용자'
