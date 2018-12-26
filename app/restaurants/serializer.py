@@ -122,6 +122,13 @@ class MenuSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'restaurant', 'food')
 
 
+class MenuCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Menu
+        fields = ('id', 'name', 'restaurant', 'food')
+        extra_kwargs = {'restaurant': {'read_only': True}, }
+
+
 class RestaurantDetailSerializer(serializers.ModelSerializer):
     menu_set = MenuSerializer(many=True)
 

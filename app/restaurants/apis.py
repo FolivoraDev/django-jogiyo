@@ -8,7 +8,7 @@ from rest_framework import generics
 from .models import Restaurant, Menu, Review, Order, Food, Category, SubChoice, Tag, Payment
 from .serializer import RestaurantSerializer, MenuSerializer, ReviewSerializer, OrderSerializer, FoodSerializer, \
     CategorySerializer, SubChoiceSerializer, TagSerializer, PaymentSerializer, OrderCreateSerializer, \
-    ReviewCreateSerializer
+    ReviewCreateSerializer, MenuCreateSerializer
 
 
 class RestaurantList(generics.ListCreateAPIView):
@@ -50,20 +50,6 @@ class RestaurantList(generics.ListCreateAPIView):
 
 
 class RestaurantUpdateView(generics.RetrieveUpdateDestroyAPIView):
-    """
-      get:
-      restuarant id에 대한 음식점(음식점에 대한 전체 정보)을 불러옵니다.
-
-      put:
-      restuarant id에 대한 음식점을 업데이트합니다.
-
-      patch:
-      restuarant id에 대한 음식점을 일부 업데이트합니다.
-
-      delete:
-      restuarant id에 대한 음식점을 삭제합니다.
-
-    """
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
 
@@ -84,9 +70,19 @@ class MenuList(generics.ListCreateAPIView):
     """
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
+    lookup_field = 'restaurant_id'
+    lookup_url_kwarg = 'restaurant_id'
 
     def get_queryset(self):
         return Menu.objects.filter(**self.kwargs)
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return MenuCreateSerializer
+        return MenuSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(**self.kwargs)
 
 
 class MenuUpdateView(generics.RetrieveUpdateDestroyAPIView):
@@ -117,15 +113,6 @@ class ReviewList(generics.ListCreateAPIView):
         return Review.objects.filter(**self.kwargs)
 
     def post(self, request, *args, **kwargs):
-        """
-        post: qweqeq
-        parameters:
-            - name: name
-            type: string
-            required: true
-
-        """
-
         self.serializer_class = ReviewCreateSerializer
 
         rating_delivery = request.data.get('rating_delivery', 0)

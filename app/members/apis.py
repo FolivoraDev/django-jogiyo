@@ -10,11 +10,8 @@ from .serializer import UserSerializer
 @permission_classes((AllowAny,))
 class UserList(generics.ListCreateAPIView):
     """
-    get:
-    DB에 존재하는 모든 유저를 보여줍니다.
-
-    post:
-    새로운 유저 인스턴스를 생성합니다.
+    get: Header에 포함 된 토큰으로 유저를 찾아 유저에 대한 정보를 반환합니다.
+    post: 새로운 유저를 생성하고 생성에 성공하면 유저 정보를 반환합니다.
     """
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
