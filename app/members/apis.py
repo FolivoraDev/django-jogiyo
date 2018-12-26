@@ -16,16 +16,12 @@ class UserList(generics.ListCreateAPIView):
 
     post:
     새로운 유저 인스턴스를 생성합니다.
-    :parameter username password
-    :return 새 유저 인스턴스, HTTP_200_OK
-    :except HTTP_400_BAD_REQUEST
-
     """
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
 
     def get_queryset(self):
-        return User.objects.filter(**self.kwargs)
+        return User.objects.filter(username=self.request.user)
 
     def post(self, request, *args, **kwargs):
 

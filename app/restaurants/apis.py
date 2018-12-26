@@ -12,6 +12,13 @@ from .serializer import RestaurantSerializer, MenuSerializer, ReviewSerializer, 
 
 
 class RestaurantList(generics.ListCreateAPIView):
+    """
+    get:
+    음식점 목록을 불러옵니다.
+
+    post:
+    새로운 음식점을 생성합니다.
+    """
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
 
@@ -43,6 +50,20 @@ class RestaurantList(generics.ListCreateAPIView):
 
 
 class RestaurantUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    """
+      get:
+      restuarant id에 대한 음식점(음식점에 대한 전체 정보)을 불러옵니다.
+
+      put:
+      restuarant id에 대한 음식점을 업데이트합니다.
+
+      patch:
+      restuarant id에 대한 음식점을 일부 업데이트합니다.
+
+      delete:
+      restuarant id에 대한 음식점을 삭제합니다.
+
+    """
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
 
@@ -54,6 +75,13 @@ class RestaurantUpdateView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class MenuList(generics.ListCreateAPIView):
+    """
+    get:
+    DB에 있는 모든 메뉴를 불러옵니다.
+
+    post:
+    새로운 메뉴를 생성합니다.
+    """
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
 
@@ -62,6 +90,20 @@ class MenuList(generics.ListCreateAPIView):
 
 
 class MenuUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    """
+      get:
+      restuarant id에 대한 음식점을 불러옵니다.
+
+      put:
+      restuarant id에 대한 음식점을 업데이트합니다.
+
+      patch:
+      restuarant id에 대한 음식점을 일부 업데이트합니다.
+
+      delete:
+      restuarant id에 대한 음식점을 삭제합니다.
+
+    """
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
 
@@ -76,18 +118,14 @@ class ReviewList(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         """
-        (*는 필수입니다.)
-        해당 레스토랑에 대한 리뷰 생성입니다.
-        *"comment":"string",
-        *"rating_delivery": int,
-        *"rating_quantity": int,
-        *"rating_taste": int,
-        "review_images": image,
-        "time": 자동 입력,
-        "user": 헤더의 토큰,
-        "menu_summary": list형태의 food,
-        "restaurant": url의 parameter (restaurant_id)
+        post: qweqeq
+        parameters:
+            - name: name
+            type: string
+            required: true
+
         """
+
         self.serializer_class = ReviewCreateSerializer
 
         rating_delivery = request.data.get('rating_delivery', 0)
@@ -99,8 +137,7 @@ class ReviewList(generics.ListCreateAPIView):
         return self.create(request, *args, **kwargs)
 
     filter_backends = (filters.OrderingFilter,)
-    filter_fields = (
-        'time')
+    filter_fields = ('time',)
 
 
 class ReviewUpdateView(generics.RetrieveUpdateDestroyAPIView):
