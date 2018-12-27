@@ -16,8 +16,15 @@ class RestaurantList(generics.ListCreateAPIView):
     get:
     음식점 목록을 불러옵니다.
 
+    url parameter로 오름차순 내림차순 정렬이 가능합니다.
+    'categories', 'tags', 'review_avg', 'review_count', 'min_order_amount', 'estimated_delivery_time'
+    ex) restaurant/?ordering=categories
+    ex) restaurant/?ordering=-categories
+
+    url parameter에 lat, lng 값을 포함시키면 반경 1km이내 음식점을 불러옵니다.
+
     post:
-    새로운 음식점을 생성합니다.
+    새로운 음식점을 생성합니다. (미완성)
     """
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
@@ -50,6 +57,12 @@ class RestaurantList(generics.ListCreateAPIView):
 
 
 class RestaurantUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    get: 1개의 음식점에 대한 세부정보를 불러옵니다.
+    put: 미완성
+    patch: 미완성
+    delete: 미완성
+    """
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
 
@@ -62,11 +75,9 @@ class RestaurantUpdateView(generics.RetrieveUpdateDestroyAPIView):
 
 class MenuList(generics.ListCreateAPIView):
     """
-    get:
-    DB에 있는 모든 메뉴를 불러옵니다.
+    get: restaurant_id에 해당하는 음식점의 메뉴를 불러옵니다.
 
-    post:
-    새로운 메뉴를 생성합니다.
+    post: restaurant_id에 해당하는 음식점의 새로운 메뉴를 생성합니다.
     """
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
@@ -92,6 +103,10 @@ class MenuUpdateView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ReviewList(generics.ListCreateAPIView):
+    """
+    get: restaurant_id에 해당하는 음식점의 리뷰목록을 불러옵니다.
+    post: restaurant_id에 해당하는 음식점의 리뷰를 생성합니다. # 리팩토링 예정
+    """
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     lookup_url_kwarg = "restaurant_id"
@@ -115,11 +130,18 @@ class ReviewList(generics.ListCreateAPIView):
 
 
 class ReviewUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    미완성
+    """
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
 
 class OrderList(generics.ListCreateAPIView):
+    """
+    get: restaurant_id에 해당하는 음식점의 주문 목록을 불러옵니다.
+    post: restaurant_id에 해당하는 음식점의 주문을 생성합니다. # 리팩토링 예정
+    """
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     lookup_url_kwarg = "restaurant_id"
@@ -128,17 +150,6 @@ class OrderList(generics.ListCreateAPIView):
         return Order.objects.filter(**self.kwargs)
 
     def post(self, request, *args, **kwargs):
-        """
-        음식점(restaurant_id)의 주문 목록을 생성합니다
-            (*: 필수로 입력해야 하는 값입니다.)
-            user: 주문한 사람 (헤더의 토큰)
-            restaurant: 주문한 음식점 (url의 parameter restaurant_id)
-            food: 주문한 음식 (음식의 id값을 리스트로 넣으시면 됩니다. ex) [1,2,3])
-            time: 주문한 시간 (주문이 생성될때 자동입력)
-            *address: 주소
-            request: 요청 사항
-        """
-
         self.serializer_class = OrderCreateSerializer
         request.data['restaurant'] = self.kwargs.get(self.lookup_url_kwarg)
 
@@ -146,6 +157,10 @@ class OrderList(generics.ListCreateAPIView):
 
 
 class FoodList(generics.ListCreateAPIView):
+    """
+    get: DB에 있는 모든 음식을 불러옵니다.
+    post: 새로운 음식을 생성합니다.
+    """
     queryset = Food.objects.all()
     serializer_class = FoodSerializer
 
@@ -156,6 +171,10 @@ class FoodList(generics.ListCreateAPIView):
 
 
 class CategoryList(generics.ListCreateAPIView):
+    """
+    get: DB에 있는 모든 카테고리를 불러옵니다.
+    post: 새로운 카테고리를 생성합니다.
+    """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -164,6 +183,10 @@ class CategoryList(generics.ListCreateAPIView):
 
 
 class SubChoiceList(generics.ListCreateAPIView):
+    """
+    get: DB에 있는 모든 추가메뉴를 불러옵니다.
+    post: 새로운 추가메뉴를 생성합니다. # 미완성
+    """
     queryset = SubChoice.objects.all()
     serializer_class = SubChoiceSerializer
 
@@ -172,10 +195,18 @@ class SubChoiceList(generics.ListCreateAPIView):
 
 
 class TagList(generics.ListCreateAPIView):
+    """
+    get: DB에 있는 모든 태그를 불러옵니다.
+    post: 새로운 태그를 생성합니다.
+    """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
 
 class PaymentList(generics.ListCreateAPIView):
+    """
+    get: DB에 있는 모든 결제방식을 불러옵니다.
+    post: 새로운 결제방식을 생성합니다.
+    """
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer

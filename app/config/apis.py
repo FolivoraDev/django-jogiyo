@@ -6,6 +6,9 @@ from members.tasks import my_send_email
 
 
 class SendEmailView(APIView):
+    """
+    미완성
+    """
 
     def get(self, request):
         return Response('hi')

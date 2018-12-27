@@ -14,6 +14,7 @@ def index(request):
 
 @authentication_classes((TokenAuthentication, SessionAuthentication))
 class SwaggerSchemaView(APIView):
+
     permission_classes = [AllowAny]
     renderer_classes = [
         renderers.OpenAPIRenderer,
