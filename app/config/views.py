@@ -1,7 +1,3 @@
-from urllib.parse import urljoin
-
-import coreapi
-import yaml
 from django.shortcuts import render
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.decorators import authentication_classes
@@ -16,71 +12,15 @@ def index(request):
     return render(request, 'index.html')
 
 
-class CustomSchemaGenerator(SchemaGenerator):
-    def get_link(self, path, method, view):
-        fields = self.get_path_fields(path, method, view)
-        yaml_doc = None
-        if view and view.__doc__:
-            try:
-                yaml_doc = yaml.load(view.__doc__)
-            except:
-                yaml_doc = None
-
-        # Extract schema information from yaml
-
-        if yaml_doc and type(yaml_doc) != str:
-            _method_desc = yaml_doc.get('description', '')
-            params = yaml_doc.get('parameters', [])
-
-            for i in params:
-                _name = i.get('name')
-                _desc = i.get('description')
-                _required = i.get('required', False)
-                _type = i.get('type', 'string')
-                _location = i.get('location', 'form')
-                field = coreapi.Field(
-                    name=_name,
-                    location=_location,
-                    required=_required,
-                    description=_desc,
-                    type=_type
-                )
-                fields.append(field)
-        else:
-
-            _method_desc = view.__doc__ if view and view.__doc__ else ''
-            fields += self.get_serializer_fields(path, method, view)
-
-        fields += self.get_pagination_fields(path, method, view)
-        fields += self.get_filter_fields(path, method, view)
-
-        if fields and any([field.location in ('form', 'body') for field in fields]):
-            encoding = self.get_encoding(path, method, view)
-        else:
-            encoding = None
-
-        if self.url and path.startswith('/'):
-            path = path[1:]
-
-        return coreapi.Link(
-            url=urljoin(self.url, path),
-            action=method.lower(),
-            encoding=encoding,
-            fields=fields,
-            description=_method_desc
-        )
-
-
 @authentication_classes((TokenAuthentication, SessionAuthentication))
 class SwaggerSchemaView(APIView):
-    exclude_from_schema = True
     permission_classes = [AllowAny]
-    renderer_classes = {
+    renderer_classes = [
         renderers.OpenAPIRenderer,
         renderers.SwaggerUIRenderer
-    }
+    ]
 
     def get(self, request):
-        generator = CustomSchemaGenerator()
+        generator = SchemaGenerator()
         schema = generator.get_schema(request=request)
         return Response(schema)

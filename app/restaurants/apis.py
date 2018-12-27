@@ -70,8 +70,6 @@ class MenuList(generics.ListCreateAPIView):
     """
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
-    lookup_field = 'restaurant_id'
-    lookup_url_kwarg = 'restaurant_id'
 
     def get_queryset(self):
         return Menu.objects.filter(**self.kwargs)
@@ -87,18 +85,7 @@ class MenuList(generics.ListCreateAPIView):
 
 class MenuUpdateView(generics.RetrieveUpdateDestroyAPIView):
     """
-      get:
-      restuarant id에 대한 음식점을 불러옵니다.
-
-      put:
-      restuarant id에 대한 음식점을 업데이트합니다.
-
-      patch:
-      restuarant id에 대한 음식점을 일부 업데이트합니다.
-
-      delete:
-      restuarant id에 대한 음식점을 삭제합니다.
-
+    미완성
     """
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
