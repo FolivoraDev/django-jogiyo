@@ -24,11 +24,11 @@ def crawler(request):
 
     params = {
         'items': '20',
-        'lat': '37.621992359265576',
-        'lng': '127.02094805108189',
+        'lat': '37.468271853169746',
+        'lng': '126.95883573777195',
         'order': 'rank',
         'page': '0',
-        'zip_code': '142100',
+        'zip_code': '151057',
     }
 
     for i in range(0, 1):
