@@ -36,11 +36,10 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     def validate(self, attrs):
+        print('qwlekjqlwekjqlwejkwqlkeqwekjqwlkj')
+
         attrs['user'] = self.context['request'].user
         attrs['menu_summary'] = []
-
-        if attrs['user'].is_anonymous:
-            raise serializers.ValidationError('비회원입니다 헤더에 토큰을 넣어주세요')
 
         date_from = datetime.datetime.now(timezone.utc) - datetime.timedelta(days=1)
 
@@ -50,18 +49,27 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
                                          restaurant__id=attrs['restaurant'].id,
                                          time__gte=date_from).order_by('-time').first().food.all().values_list(
                                          'id', flat=True)]
+
         return attrs
 
     class Meta:
         model = Review
         fields = (
-            'id', 'comment', 'rating', 'rating_delivery', 'rating_quantity', 'rating_taste', 'review_images', 'time',
+            'id', 'comment', 'rating_delivery', 'rating_quantity', 'rating_taste', 'review_images', 'time',
             'user', 'menu_summary', 'restaurant')
+
+        extra_kwargs = {'restaurant': {'read_only': True},
+                        'menu_summary': {'read_only': True}, }
 
 
 class ReviewSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     menu_summary = FoodSerializer(many=True)
+    # 레이팅 평균 추가
+    rating = serializers.SerializerMethodField()
+
+    def get_rating(self, obj):
+        return (obj.rating_delivery + obj.rating_quantity + obj.rating_taste) / 3
 
     class Meta:
         model = Review

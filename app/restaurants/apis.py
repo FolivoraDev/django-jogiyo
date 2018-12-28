@@ -122,8 +122,11 @@ class ReviewList(generics.ListCreateAPIView):
         rating_taste = request.data.get('rating_taste', 0)
 
         request.data['rating'] = (rating_delivery + rating_quantity + rating_taste) / 3
-        request.data['restaurant'] = self.kwargs.get(self.lookup_url_kwarg)
+        # request.data['restaurant'] = self.kwargs.get(self.lookup_url_kwarg)
         return self.create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        serializer.save(**self.kwargs)
 
     filter_backends = (filters.OrderingFilter,)
     filter_fields = ('time',)
