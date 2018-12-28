@@ -95,14 +95,16 @@ class RestaurantSerializer(serializers.ModelSerializer):
     def get_rating_delivery_avg(self, obj):
         return obj.review_set.aggregate(Avg('rating_delivery'))['rating_delivery__avg']
 
-    def get_review_avg(self, obj):
-        return obj.review_set.aggregate(Avg('rating'))['rating__avg']
-
     def get_rating_taste_avg(self, obj):
         return obj.review_set.aggregate(Avg('rating_taste'))['rating_taste__avg']
 
     def get_rating_quantity_avg(self, obj):
         return obj.review_set.aggregate(Avg('rating_quantity'))['rating_quantity__avg']
+
+    def get_review_avg(self, obj):
+        return (obj.review_set.aggregate(Avg('rating_quantity'))['rating_quantity__avg'] +
+                obj.review_set.aggregate(Avg('rating_taste'))['rating_taste__avg'] +
+                obj.review_set.aggregate(Avg('rating_delivery'))['rating_delivery__avg']) / 3
 
     def get_review_count(self, obj):
         return obj.review_set.all().count()
