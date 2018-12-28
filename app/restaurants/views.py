@@ -483,10 +483,13 @@ def detail_crawler(request):
     # # for i in name:
     # #     User.objects.create_user(username=i, password='123')
 
-    for i, v in enumerate(User.objects.all()):
+    # for i, v in enumerate(User.objects.all()):
+    #
+    #     v.phone_number = '+8201000011' + str(i)
+    #     print(v.username, v.phone_number)
+    #     v.save()
 
-        v.phone_number = '+8201000011' + str(i)
-        print(v.username, v.phone_number)
-        v.save()
+    for i in Review.objects.all():
+        i.rating = (i.rating_taste + i.rating_quantity + i.rating_delivery) / 3
 
     return HttpResponse('success')

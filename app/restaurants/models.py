@@ -79,7 +79,7 @@ class Payment(models.Model):
 
 class Review(models.Model):
     comment = models.CharField(max_length=500)  # 댓글
-    # rating = models.DecimalField(max_digits=10, decimal_places=1)  # 평균
+    rating = models.DecimalField(max_digits=10, decimal_places=1, default=0)  # 평균
     rating_delivery = models.DecimalField(max_digits=10, decimal_places=1)  # 배달
     rating_quantity = models.DecimalField(max_digits=10, decimal_places=1)  # 양
     rating_taste = models.DecimalField(max_digits=10, decimal_places=1)  # 맛

@@ -37,6 +37,8 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
         attrs['user'] = self.context['request'].user
         attrs['menu_summary'] = []
 
+        attrs['rating'] = (attrs['rating_delivery'] + attrs['rating_quantity'] + attrs['rating_taste']) / 3
+
         date_from = datetime.datetime.now(timezone.utc) - datetime.timedelta(days=1)
 
         if attrs['user'].order_set.exists():
@@ -51,7 +53,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = (
-            'id', 'comment', 'rating_delivery', 'rating_quantity', 'rating_taste', 'review_images', 'time',
+            'id', 'comment', 'rating', 'rating_delivery', 'rating_quantity', 'rating_taste', 'review_images', 'time',
             'user', 'menu_summary', 'restaurant')
 
         extra_kwargs = {'restaurant': {'read_only': True},
@@ -85,7 +87,6 @@ class RestaurantSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     categories = CategorySerializer(many=True)
     payment_methods = PaymentSerializer(many=True)
-
     rating_delivery_avg = serializers.SerializerMethodField()
     review_avg = serializers.SerializerMethodField()
     rating_quantity_avg = serializers.SerializerMethodField()
@@ -93,18 +94,16 @@ class RestaurantSerializer(serializers.ModelSerializer):
     review_count = serializers.SerializerMethodField()
 
     def get_rating_delivery_avg(self, obj):
-        return obj.review_set.aggregate(Avg('rating_delivery'))['rating_delivery__avg'] or 0
+        return obj.review_set.aggregate(Avg('rating_delivery'))['rating_delivery__avg']
 
     def get_rating_taste_avg(self, obj):
-        return obj.review_set.aggregate(Avg('rating_taste'))['rating_taste__avg'] or 0
+        return obj.review_set.aggregate(Avg('rating_taste'))['rating_taste__avg']
 
     def get_rating_quantity_avg(self, obj):
-        return obj.review_set.aggregate(Avg('rating_quantity'))['rating_quantity__avg'] or 0
+        return obj.review_set.aggregate(Avg('rating_quantity'))['rating_quantity__avg']
 
     def get_review_avg(self, obj):
-        return ((obj.review_set.aggregate(Avg('rating_quantity'))['rating_quantity__avg'] or 0) +
-                (obj.review_set.aggregate(Avg('rating_taste'))['rating_taste__avg'] or 0) +
-                (obj.review_set.aggregate(Avg('rating_delivery'))['rating_delivery__avg'] or 0)) / 3
+        return obj.review_set.aggregate(Avg('rating'))['rating__avg']
 
     def get_review_count(self, obj):
         return obj.review_set.all().count()
