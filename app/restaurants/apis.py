@@ -105,18 +105,18 @@ class MenuUpdateView(generics.RetrieveUpdateDestroyAPIView):
 class ReviewList(generics.ListCreateAPIView):
     """
     get: restaurant_id에 해당하는 음식점의 리뷰목록을 불러옵니다.
-    post: restaurant_id에 해당하는 음식점의 리뷰를 생성합니다. # 리팩토링 예정
+    post: restaurant_id에 해당하는 음식점의 리뷰를 생성합니다.
     """
     queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
     lookup_url_kwarg = "restaurant_id"
 
     def get_queryset(self):
         return Review.objects.filter(**self.kwargs)
 
-    def post(self, request, *args, **kwargs):
-        self.serializer_class = ReviewCreateSerializer
-        return self.create(request, *args, **kwargs)
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ReviewCreateSerializer
+        return ReviewSerializer
 
     def perform_create(self, serializer):
         serializer.save(**self.kwargs)
