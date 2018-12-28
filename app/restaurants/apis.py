@@ -1,6 +1,9 @@
+import datetime
+
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance as MeasureDistance
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework import generics
@@ -8,7 +11,7 @@ from rest_framework import generics
 from .models import Restaurant, Menu, Review, Order, Food, Category, SubChoice, Tag, Payment
 from .serializer import RestaurantSerializer, MenuSerializer, ReviewSerializer, OrderSerializer, FoodSerializer, \
     CategorySerializer, SubChoiceSerializer, TagSerializer, PaymentSerializer, OrderCreateSerializer, \
-    ReviewCreateSerializer, MenuCreateSerializer, ReviewUpdateSerializer
+    ReviewCreateSerializer, MenuCreateSerializer
 
 
 class RestaurantList(generics.ListCreateAPIView):
@@ -120,10 +123,11 @@ class ReviewList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         self.kwargs['user'] = self.request.user
-
         self.kwargs['rating'] = (serializer.validated_data['rating_delivery'] +
                                  serializer.validated_data['rating_quantity'] +
                                  serializer.validated_data['rating_taste']) / 3
+
+        date_from = datetime.datetime.now(timezone.utc) - datetime.timedelta(days=1)
 
         if self.kwargs['user'].order_set.exists():
             self.kwargs['menu_summary'] = [i for i in self.kwargs['user'].order_set.filter(
@@ -139,14 +143,13 @@ class ReviewList(generics.ListCreateAPIView):
 
 class ReviewUpdateView(generics.RetrieveUpdateDestroyAPIView):
     """
-    미완성
+    put: Review 인스턴스를 업데이트합니다.
+    patch: Review 인스턴스를 일부 업데이트합니다.
+    delete: Review 인스턴스를 삭제합니다.
     """
     queryset = Review.objects.all()
-    serializer_class = ReviewUpdateSerializer
+    serializer_class = ReviewCreateSerializer
     lookup_url_kwarg = "restaurant_id"
-
-    def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
 
     filter_backends = (filters.OrderingFilter,)
     filter_fields = ('time',)

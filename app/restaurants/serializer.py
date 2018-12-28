@@ -30,6 +30,11 @@ class FoodSerializer(serializers.ModelSerializer):
 
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
+    def update(self, instance, validated_data):
+        instance.rating = (instance.rating_delivery + instance.rating_quantity + instance.rating_taste) / 3
+        super().update(instance, validated_data)
+        return instance
+
     class Meta:
         model = Review
         fields = (
