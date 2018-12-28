@@ -1,7 +1,4 @@
-import datetime
-
 from django.db.models import Avg
-from django.utils import timezone
 from rest_framework import serializers
 
 from members.serializer import UserSerializer
@@ -33,23 +30,6 @@ class FoodSerializer(serializers.ModelSerializer):
 
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
-    def validate(self, attrs):
-        attrs['user'] = self.context['request'].user
-        attrs['menu_summary'] = []
-
-        attrs['rating'] = (attrs['rating_delivery'] + attrs['rating_quantity'] + attrs['rating_taste']) / 3
-
-        date_from = datetime.datetime.now(timezone.utc) - datetime.timedelta(days=1)
-
-        if attrs['user'].order_set.exists():
-            attrs['menu_summary'] = [i for i in
-                                     attrs['user'].order_set.filter(
-                                         restaurant__id=attrs['restaurant'].id,
-                                         time__gte=date_from).order_by('-time').first().food.all().values_list(
-                                         'id', flat=True)]
-
-        return attrs
-
     class Meta:
         model = Review
         fields = (
@@ -59,6 +39,12 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
         extra_kwargs = {'restaurant': {'read_only': True},
                         'menu_summary': {'read_only': True},
                         'user': {'read_only': True}}
+
+
+class ReviewUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
 
 
 class ReviewSerializer(serializers.ModelSerializer):

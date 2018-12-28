@@ -8,7 +8,7 @@ from rest_framework import generics
 from .models import Restaurant, Menu, Review, Order, Food, Category, SubChoice, Tag, Payment
 from .serializer import RestaurantSerializer, MenuSerializer, ReviewSerializer, OrderSerializer, FoodSerializer, \
     CategorySerializer, SubChoiceSerializer, TagSerializer, PaymentSerializer, OrderCreateSerializer, \
-    ReviewCreateSerializer, MenuCreateSerializer
+    ReviewCreateSerializer, MenuCreateSerializer, ReviewUpdateSerializer
 
 
 class RestaurantList(generics.ListCreateAPIView):
@@ -119,6 +119,18 @@ class ReviewList(generics.ListCreateAPIView):
         return ReviewSerializer
 
     def perform_create(self, serializer):
+        self.kwargs['user'] = self.request.user
+
+        self.kwargs['rating'] = (serializer.validated_data['rating_delivery'] +
+                                 serializer.validated_data['rating_quantity'] +
+                                 serializer.validated_data['rating_taste']) / 3
+
+        if self.kwargs['user'].order_set.exists():
+            self.kwargs['menu_summary'] = [i for i in self.kwargs['user'].order_set.filter(
+                restaurant__id=self.kwargs['restaurant'].id, time__gte=date_from).order_by(
+                '-time').first().food.all().values_list(
+                'id', flat=True)]
+
         serializer.save(**self.kwargs)
 
     filter_backends = (filters.OrderingFilter,)
@@ -130,7 +142,14 @@ class ReviewUpdateView(generics.RetrieveUpdateDestroyAPIView):
     미완성
     """
     queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
+    serializer_class = ReviewUpdateSerializer
+    lookup_url_kwarg = "restaurant_id"
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    filter_backends = (filters.OrderingFilter,)
+    filter_fields = ('time',)
 
 
 class OrderList(generics.ListCreateAPIView):
