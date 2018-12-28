@@ -491,5 +491,6 @@ def detail_crawler(request):
 
     for i in Review.objects.all():
         i.rating = (i.rating_taste + i.rating_quantity + i.rating_delivery) / 3
+        i.save()
 
     return HttpResponse('success')
