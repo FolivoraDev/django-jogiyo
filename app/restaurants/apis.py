@@ -116,13 +116,6 @@ class ReviewList(generics.ListCreateAPIView):
 
     def post(self, request, *args, **kwargs):
         self.serializer_class = ReviewCreateSerializer
-
-        rating_delivery = request.data.get('rating_delivery', 0)
-        rating_quantity = request.data.get('rating_quantity', 0)
-        rating_taste = request.data.get('rating_taste', 0)
-
-        request.data['rating'] = (rating_delivery + rating_quantity + rating_taste) / 3
-        # request.data['restaurant'] = self.kwargs.get(self.lookup_url_kwarg)
         return self.create(request, *args, **kwargs)
 
     def perform_create(self, serializer):

@@ -33,11 +33,7 @@ class FoodSerializer(serializers.ModelSerializer):
 
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-
     def validate(self, attrs):
-        print('qwlekjqlwekjqlwejkwqlkeqwekjqwlkj')
-
         attrs['user'] = self.context['request'].user
         attrs['menu_summary'] = []
 
@@ -59,7 +55,8 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
             'user', 'menu_summary', 'restaurant')
 
         extra_kwargs = {'restaurant': {'read_only': True},
-                        'menu_summary': {'read_only': True}, }
+                        'menu_summary': {'read_only': True},
+                        'user': {'read_only': True}}
 
 
 class ReviewSerializer(serializers.ModelSerializer):

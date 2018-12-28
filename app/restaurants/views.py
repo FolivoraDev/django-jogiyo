@@ -484,7 +484,9 @@ def detail_crawler(request):
     # #     User.objects.create_user(username=i, password='123')
 
     for i, v in enumerate(User.objects.all()):
-        v.phone_number = '+82010000000' + 'i'
+
+        v.phone_number = '+8201000011' + str(i)
+        print(v.username, v.phone_number)
         v.save()
 
     return HttpResponse('success')
