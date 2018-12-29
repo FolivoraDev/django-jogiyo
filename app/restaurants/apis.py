@@ -7,6 +7,7 @@ from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework import generics
+from rest_framework.parsers import MultiPartParser
 
 from .models import Restaurant, Menu, Review, Order, Food, Category, SubChoice, Tag, Payment
 from .serializer import RestaurantSerializer, MenuSerializer, ReviewSerializer, OrderSerializer, FoodSerializer, \
@@ -112,6 +113,8 @@ class ReviewList(generics.ListCreateAPIView):
     """
     queryset = Review.objects.all()
     lookup_url_kwarg = "restaurant_id"
+
+    parser_classes = (MultiPartParser,)
 
     def get_queryset(self):
         return Review.objects.filter(**self.kwargs)

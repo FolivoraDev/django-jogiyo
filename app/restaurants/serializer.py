@@ -55,7 +55,6 @@ class ReviewUpdateSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     menu_summary = FoodSerializer(many=True)
-    # 레이팅 평균 추가
     rating = serializers.SerializerMethodField()
 
     def get_rating(self, obj):
