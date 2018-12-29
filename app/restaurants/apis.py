@@ -5,6 +5,7 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance as MeasureDistance
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from rest_framework import filters
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser
@@ -114,7 +115,7 @@ class ReviewList(generics.ListCreateAPIView):
     queryset = Review.objects.all()
     lookup_url_kwarg = "restaurant_id"
 
-    parser_classes = (MultiPartParser,)
+    parser_classes = (MultiPartParser, CamelCaseJSONParser)
 
     def get_queryset(self):
         return Review.objects.filter(**self.kwargs)
