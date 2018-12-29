@@ -152,7 +152,9 @@ class ReviewUpdateView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Review.objects.all()
     serializer_class = ReviewCreateSerializer
-    lookup_url_kwarg = "restaurant_id"
+
+    def get_queryset(self):
+        return Review.objects.filter(**self.kwargs)
 
     filter_backends = (filters.OrderingFilter,)
     filter_fields = ('time',)
