@@ -19,7 +19,7 @@ from .serializer import RestaurantSerializer, MenuSerializer, ReviewSerializer, 
 class RestaurantList(generics.ListCreateAPIView):
     """
     get:
-    음식점 목록을 불러옵니다.
+    음식점 목록을 불러옵니다. (리팩토링 예정)
 
     url parameter로 오름차순 내림차순 정렬이 가능합니다.
     'categories', 'tags', 'review_avg', 'review_count', 'min_order_amount', 'estimated_delivery_time'
@@ -38,12 +38,14 @@ class RestaurantList(generics.ListCreateAPIView):
         lat = self.request.query_params.get('lat', False)
         lng = self.request.query_params.get('lng', False)
 
+        # 위도 경도값을 get query parameter로 받아 반경 radius(km)안에 있는 음식점 목록을 조회합니다.
         if lat and lng:
             lat = float(lat)
             lng = float(lng)
             radius = 1
             point = Point(lng, lat)
 
+            # query param ordering에 distance 문자열이 있을 경우 정렬 한 값을 조회합니다.
             distance = self.request.query_params.get('ordering', False)
 
             if distance:
@@ -127,12 +129,14 @@ class ReviewList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         self.kwargs['user'] = self.request.user
+        # 리뷰 평균을 계산합니다.
         self.kwargs['rating'] = (serializer.validated_data['rating_delivery'] +
                                  serializer.validated_data['rating_quantity'] +
                                  serializer.validated_data['rating_taste']) / 3
 
         date_from = datetime.datetime.now(timezone.utc) - datetime.timedelta(days=1)
 
+        # restuarant_id에 해당하는 음식점에서 요청한 유저의 주문 목록 중 24시간 이내에 가장 최근 것을 찾습니다.
         if self.kwargs['user'].order_set.exists():
             self.kwargs['menu_summary'] = [i for i in self.kwargs['user'].order_set.filter(
                 restaurant__id=self.kwargs['restaurant'].id, time__gte=date_from).order_by(
