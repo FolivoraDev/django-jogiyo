@@ -3,6 +3,7 @@ import datetime
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance as MeasureDistance
+from django.http import HttpResponse
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
@@ -120,6 +121,8 @@ class ReviewList(generics.ListCreateAPIView):
     parser_classes = (MultiPartParser, CamelCaseJSONParser)
 
     def post(self, request, *args, **kwargs):
+        print(request.data['review_images'])
+        return HttpResponse('<img src = "%s" />' % request.data['review_images'])
         return self.create(request, *args, **kwargs)
 
     def get_queryset(self):
