@@ -9,7 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from rest_framework import filters
 from rest_framework import generics
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, FileUploadParser
 
 from .models import Restaurant, Menu, Review, Order, Food, Category, SubChoice, Tag, Payment
 from .serializer import RestaurantSerializer, MenuSerializer, ReviewSerializer, OrderSerializer, FoodSerializer, \
@@ -118,7 +118,7 @@ class ReviewList(generics.ListCreateAPIView):
     queryset = Review.objects.all()
     lookup_url_kwarg = "restaurant_id"
 
-    parser_classes = (MultiPartParser, CamelCaseJSONParser)
+    parser_classes = (FileUploadParser, MultiPartParser, CamelCaseJSONParser)
 
     def post(self, request, *args, **kwargs):
         # print(request.data['review_images'])
