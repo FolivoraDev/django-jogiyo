@@ -121,8 +121,8 @@ class ReviewList(generics.ListCreateAPIView):
     parser_classes = (MultiPartParser, CamelCaseJSONParser)
 
     def post(self, request, *args, **kwargs):
-        print(request.data['review_images'])
-        return HttpResponse('<img src = "%s" />' % request.data['review_images'])
+        # print(request.data['review_images'])
+        return HttpResponse('<img src = "%s" />' % request.data.get('review_images', 'qwlkejqlwej'))
         return self.create(request, *args, **kwargs)
 
     def get_queryset(self):
