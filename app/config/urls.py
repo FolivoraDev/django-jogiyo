@@ -23,6 +23,8 @@ from config import apis
 from config.views import SwaggerSchemaView
 from . import views
 
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('members/', include('members.urls.base')),
@@ -43,3 +45,9 @@ urlpatterns += [
     path(r'', views.index),
     re_path(r'^(?:.*)/?$', views.index),
 ]
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+                       path('__debug__/', include(debug_toolbar.urls)),
+                   ] + urlpatterns

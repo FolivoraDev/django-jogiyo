@@ -119,6 +119,9 @@ class ReviewList(generics.ListCreateAPIView):
 
     parser_classes = (MultiPartParser, CamelCaseJSONParser)
 
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
     def get_queryset(self):
         return Review.objects.filter(**self.kwargs)
 

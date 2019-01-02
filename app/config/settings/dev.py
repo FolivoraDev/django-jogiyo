@@ -30,7 +30,12 @@ AWS_DEFAULT_ACL = None
 
 INSTALLED_APPS += [
     'django_extensions',
+    'debug_toolbar',
 ]
+
+INTERNAL_IPS = ('127.0.0.1',)
+
+MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware', ]
 
 # Celery settings
 
