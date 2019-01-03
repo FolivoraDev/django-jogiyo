@@ -23,8 +23,6 @@ from config import apis
 from config.views import SwaggerSchemaView
 from . import views
 
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('members/', include('members.urls.base')),
@@ -33,10 +31,9 @@ urlpatterns = [
     path('docs/', SwaggerSchemaView.as_view()),
     path('send-email/', apis.SendEmailView.as_view())
 ]
-urlpatterns += static(
-    prefix=settings.MEDIA_URL,
-    document_root=settings.MEDIA_ROOT,
-)
+if settings.DEBUG is True:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 urlpatterns += [
     path('api-auth/', include('rest_framework.urls')),
 ]
