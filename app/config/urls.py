@@ -24,27 +24,28 @@ from config.views import SwaggerSchemaView
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('my_admin/', admin.site.urls),
     path('members/', include('members.urls.base')),
     path('restaurants/', include('restaurants.urls.base')),
     path('api-token-auth/', obtain_auth_token),
     path('docs/', SwaggerSchemaView.as_view()),
     path('send-email/', apis.SendEmailView.as_view())
 ]
-if settings.DEBUG is True:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG is True:
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += [
     path('api-auth/', include('rest_framework.urls')),
 ]
 
-urlpatterns += [
-    path(r'', views.index),
-    re_path(r'^(?:.*)/?$', views.index),
-]
 if settings.DEBUG:
     import debug_toolbar
 
     urlpatterns += [
-                       path('__debug__/', include(debug_toolbar.urls)),
-                   ] + urlpatterns
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]
+
+urlpatterns += [
+    path(r'', views.index),
+    re_path(r'^(?:.*)/?$', views.index),
+]
