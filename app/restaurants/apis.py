@@ -3,7 +3,6 @@ import datetime
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance as MeasureDistance
-from django.http import HttpResponse
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
@@ -55,8 +54,8 @@ class RestaurantList(generics.ListCreateAPIView):
             else:
                 query = Restaurant.objects.filter(location__distance_lte=(point, MeasureDistance(km=radius)))
         else:
-            query = Restaurant.objects.filter(**self.kwargs)
-
+            # query = Restaurant.objects.filter(**self.kwargs)
+            query = Restaurant.objects.filter(**self.kwargs).prefetch_related('review_set', 'payment_methods', 'tags', 'categories')
         return query
 
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)

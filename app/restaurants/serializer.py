@@ -1,4 +1,3 @@
-from django.db.models import Avg
 from rest_framework import serializers
 
 from members.serializer import UserSerializer
@@ -83,17 +82,30 @@ class RestaurantSerializer(serializers.ModelSerializer):
     rating_taste_avg = serializers.SerializerMethodField()
     review_count = serializers.SerializerMethodField()
 
+    def get_my_avg(self, query_list, category_param):
+        sum_list = []
+
+        for i in query_list:
+            param_dict = {'rating_taste': i.rating_taste,
+                          'rating_delivery': i.rating_delivery,
+                          'rating_quantity': i.rating_quantity,
+                          'rating': i.rating, }
+
+            sum_list.append(param_dict[category_param])
+
+        return sum(sum_list) / len(query_list)
+
     def get_rating_delivery_avg(self, obj):
-        return obj.review_set.aggregate(Avg('rating_delivery'))['rating_delivery__avg']
+        return self.get_my_avg(obj.review_set.all(), 'rating_delivery')
 
     def get_rating_taste_avg(self, obj):
-        return obj.review_set.aggregate(Avg('rating_taste'))['rating_taste__avg']
+        return self.get_my_avg(obj.review_set.all(), 'rating_taste')
 
     def get_rating_quantity_avg(self, obj):
-        return obj.review_set.aggregate(Avg('rating_quantity'))['rating_quantity__avg']
+        return self.get_my_avg(obj.review_set.all(), 'rating_quantity')
 
-    def get_review_avg(self, obj):
-        return obj.review_set.aggregate(Avg('rating'))['rating__avg']
+    def get_review_avg(self, obj: Restaurant):
+        return self.get_my_avg(obj.review_set.all(), 'rating')
 
     def get_review_count(self, obj):
         return obj.review_set.all().count()

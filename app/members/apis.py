@@ -9,7 +9,7 @@ from .serializer import UserSerializer
 @permission_classes((AllowAny,))
 class UserList(generics.ListCreateAPIView):
     """
-    get: 전체 유저를 정보를 반환합니다. (user/me/ 현재유저) (user/username/ pk유저)
+    get: 전체 유저를 정보를 반환합니다. (user/me/ 현재유저) (user/username/ username유저)
     post: 새로운 유저를 생성하고 생성에 성공하면 유저 정보를 반환합니다.
     """
     serializer_class = UserSerializer
