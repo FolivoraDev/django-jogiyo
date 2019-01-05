@@ -10,7 +10,7 @@ class User(AbstractUser):
 
     nick_name = models.CharField(max_length=20, blank=True)
     email = models.EmailField(blank=True)
-    phone_number = PhoneNumberField(unique=True, blank=True)
+    phone_number = PhoneNumberField(unique=False, blank=True)
 
     class Meta:
         verbose_name = '사용자'
