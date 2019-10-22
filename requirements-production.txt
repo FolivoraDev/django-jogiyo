@@ -2,7 +2,7 @@ boto3<1.10
 Django<2.2
 django-storages<1.8
 psycopg2-binary<2.8
-Pillow<5.4
+Pillow<6.3
 pytz<2018.8
 sentry-sdk<0.6
 django-rest-swagger<2.3.0
